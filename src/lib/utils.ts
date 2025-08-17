@@ -26,7 +26,7 @@ export function slugify(text: string): string {
     .replace(/[^a-z0-9 -]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .trim('-')
+    .replace(/^-+|-+$/g, '')
 }
 
 export function truncateText(text: string, maxLength: number): string {

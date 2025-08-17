@@ -63,7 +63,7 @@ export function generateMetadata({
       canonical: url,
     },
     openGraph: {
-      type,
+      type: type === 'product' ? 'website' : type,
       locale: 'fr_FR',
       url: fullUrl,
       title: fullTitle,

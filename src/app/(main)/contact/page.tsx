@@ -100,7 +100,7 @@ export default function ContactPage() {
       role: 'Directrice Commerciale',
       phone: '+33 1 23 45 67 80',
       email: 'sophie.martin@agence-premium.fr',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5e5?w=150',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       speciality: 'Achat / Vente',
     },
     {

@@ -1,18 +1,17 @@
 # 🏠 Agence Immobilière Premium
 
-Une application web complète et moderne pour agences immobilières, développée avec Next.js 14, MySQL, Stripe et les dernières technologies web. Interface professionnelle, sécurisée et prête pour la production.
+Une application web moderne pour agences immobilières, développée avec Next.js 14, MySQL, et les dernières technologies web. Interface professionnelle et sécurisée.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![MySQL](https://img.shields.io/badge/MySQL-8-orange?logo=mysql)
-![Stripe](https://img.shields.io/badge/Stripe-Payments-purple?logo=stripe)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-teal?logo=tailwindcss)
 
 ## 🌟 Aperçu
 
-Application fullstack complète offrant une expérience utilisateur exceptionnelle pour clients et agents immobiliers, avec interface d'administration avancée, paiements sécurisés et design moderne.
+Application fullstack moderne offrant une expérience utilisateur exceptionnelle pour clients et agents immobiliers, avec interface d'administration complète et design moderne.
 
-## ✨ Fonctionnalités Complètes
+## ✨ Fonctionnalités Implémentées
 
 ### 🏡 **Front-office (Interface Publique)**
 
@@ -20,103 +19,78 @@ Application fullstack complète offrant une expérience utilisateur exceptionnel
 - 🏠 **Page d'accueil** - Présentation élégante avec recherche rapide et propriétés vedettes
 - 🏘️ **Catalogue complet** - Liste des biens avec filtres avancés (type, prix, superficie, localisation, pièces)
 - 🔍 **Recherche avancée** - Interface avec carte interactive Leaflet/OpenStreetMap et géolocalisation
-- 📋 **Fiche détaillée** - Galerie photos HD, visite virtuelle 360°, caractéristiques complètes
-- 💳 **Paiement Stripe** - Réservation et acomptes sécurisés avec historique des transactions
+- 📋 **Fiche détaillée** - Galerie photos HD, caractéristiques complètes
 - 📱 **Blog immobilier** - Articles, actualités, conseils avec système de catégories
-- 📞 **Contact multi-canal** - Formulaire, chat en ligne, WhatsApp, prise de RDV
-- ℹ️ **À propos** - Présentation de l'équipe, histoire, valeurs, certifications
+- 📞 **Contact multi-canal** - Formulaire de contact
+- ℹ️ **À propos** - Présentation de l'équipe, histoire, valeurs
 - 🛠️ **Services détaillés** - Achat, vente, investissement, gestion locative
-- 📊 **Estimation en ligne** - Outil d'évaluation gratuite en 4 étapes
+- 📊 **Estimation en ligne** - Outil d'évaluation gratuite
 
 #### **Espace Utilisateur Personnel**
-- 🔐 **Authentification complète** - Email/password + OAuth (Google, Facebook)
-- 👤 **Profil personnalisé** - Gestion des informations, préférences, historique
-- ❤️ **Favoris avancés** - Sauvegarde, organisation, partage, export PDF
-- 🔔 **Alertes intelligentes** - Notifications email/SMS pour nouveaux biens correspondants
-- 📈 **Tableau de bord** - Statistiques personnelles, activité récente
-- 💰 **Historique paiements** - Suivi des transactions et factures
+- 🔐 **Authentification complète** - Email/password avec NextAuth.js
+- 👤 **Profil personnalisé** - Gestion des informations et préférences
+- ❤️ **Favoris avancés** - Sauvegarde et organisation des propriétés préférées
 
 ### 🛠️ **Back-office (Administration)**
 
 #### **Tableau de Bord Analytique**
 - 📊 **Statistiques temps réel** - Propriétés en ligne, visites, utilisateurs actifs
-- 💹 **Métriques financières** - CA, transactions Stripe, commissions
-- 📈 **Graphiques interactifs** - Évolution des ventes, performance agents
-- 🎯 **Indicateurs KPI** - Taux de conversion, satisfaction client
+- 💹 **Métriques financières** - Vue d'ensemble des transactions
+- 📈 **Graphiques interactifs** - Évolution des ventes et performance
 
 #### **Gestion Complète des Propriétés**
-- ➕ **Ajout guidé** - Formulaire en 4 étapes avec validation
-- 🖼️ **Upload média** - Images HD, vidéos, visites virtuelles 360°
+- ➕ **Ajout guidé** - Formulaire complet avec validation
+- 🖼️ **Upload média** - Images HD et gestion des médias
 - ✏️ **Édition avancée** - Modification complète, gestion du statut
 - 🗺️ **Géolocalisation** - Positionnement GPS précis sur carte
 - 🏷️ **Gestion des tags** - Équipements, caractéristiques, mise en vedette
-- 📋 **Import/Export** - Fichiers CSV, synchronisation MLS
 
 #### **Administration Utilisateurs**
-- 👥 **Gestion des rôles** - Admin, Agent, Client avec permissions granulaires
-- 📝 **Profils détaillés** - Informations complètes, historique d'activité
-- 📧 **Communication** - Envoi d'emails groupés, newsletters
-- 🚫 **Modération** - Suspension, activation, gestion des signalements
+- 👥 **Gestion des rôles** - Admin, Agent, Client avec permissions
+- 📝 **Profils détaillés** - Informations complètes et historique d'activité
 
 #### **Suivi Commercial**
-- 💳 **Transactions Stripe** - Historique, remboursements, réconciliation
-- 📅 **Rendez-vous** - Planning, confirmations, rappels automatiques
+- 📅 **Rendez-vous** - Planning et gestion des rendez-vous
 - 💬 **Messages clients** - Centre de communication unifié
-- 📊 **Rapports détaillés** - Performance, commissions, statistiques
+- 📊 **Rapports détaillés** - Performance et statistiques
 
 #### **Gestion de Contenu**
 - ✍️ **Blog management** - Création, édition, publication d'articles
-- 📚 **Revue digitale** - Catalogues PDF interactifs
-- ⚙️ **Paramètres SEO** - Meta tags, URLs, Schema.org
-- 🏢 **Informations agence** - Coordonnées, équipe, services
+- ⚙️ **Paramètres SEO** - Meta tags et URLs optimisées
+- 🏢 **Informations agence** - Coordonnées et services
 
-### 🔧 **Fonctionnalités Techniques Avancées**
+#### **Gestion du Profil Admin**
+- 👤 **Profil personnel** - Gestion des informations personnelles et professionnelles
+- 🔐 **Sécurité** - Changement de mot de passe et authentification à deux facteurs
+- ⚙️ **Paramètres** - Configuration de l'application
+
+### 🔧 **Fonctionnalités Techniques Implémentées**
 
 #### **Architecture Moderne**
 - ⚡ **Next.js 14** - App Router, Server Components, optimisations automatiques
 - 🗄️ **Base de données MySQL** - Prisma ORM, migrations, relations complexes
 - 🔐 **NextAuth.js** - Authentification sécurisée, sessions, JWT
-- 💳 **Stripe intégré** - Paiements, webhooks, gestion des erreurs
 - 🗺️ **Cartes interactives** - Leaflet, OpenStreetMap, clustering
 - 🎨 **Tailwind CSS** - Design system cohérent, responsive
 - 📱 **TypeScript** - Sécurité du code, auto-complétion
 
 #### **SEO & Performance**
 - 🔍 **SEO optimisé** - Meta tags dynamiques, Schema.org, sitemap.xml
-- ⚡ **Performance** - Images optimisées, lazy loading, caching
-- 📱 **PWA Ready** - Installation, notifications push, mode offline
-- 🌐 **Multilingue** - Support français/arabe avec next-intl
-- 🔒 **Sécurité OWASP** - Protection XSS, CSRF, injection SQL
+- ⚡ **Performance** - Images optimisées, lazy loading
+- 📱 **Responsive** - Design adaptatif mobile-first
 
-#### **Intégrations Tierces**
-- 📧 **Nodemailer** - Envoi d'emails transactionnels
-- 🖼️ **Sharp** - Optimisation et redimensionnement d'images
-- 📊 **Analytics** - Google Analytics, tracking des conversions
-- 💬 **Chat en direct** - Widget de discussion intégré
-- 📱 **WhatsApp** - Lien direct pour contact rapide
-
-### 📄 **Pages Légales Complètes**
-- 🔒 **Politique de confidentialité** - Conforme RGPD, détaillée
-- ⚖️ **Conditions générales** - Utilisation du site, services
-- 🍪 **Politique cookies** - Gestion des préférences utilisateur
-
-## 🚀 Guide d'Installation Détaillé
+## 🚀 Guide d'Installation
 
 ### 📋 **Prérequis Système**
 
 Avant de commencer, assurez-vous d'avoir installé :
 
-| Logiciel | Version Minimale | Recommandée | Lien de téléchargement |
-|----------|------------------|-------------|------------------------|
-| **Node.js** | 18.0+ | 20.0+ LTS | [nodejs.org](https://nodejs.org) |
-| **npm** | 9.0+ | 10.0+ | Inclus avec Node.js |
-| **MySQL** | 8.0+ | 8.0+ | [mysql.com](https://dev.mysql.com/downloads/) |
-| **Git** | 2.30+ | Latest | [git-scm.com](https://git-scm.com) |
-
-#### **Comptes Tiers (Optionnels)**
-- 💳 **Stripe** - Pour les paiements ([dashboard.stripe.com](https://dashboard.stripe.com))
-- 🔑 **Google OAuth** - Pour l'authentification Google ([console.cloud.google.com](https://console.cloud.google.com))
-- 📘 **Facebook OAuth** - Pour l'authentification Facebook ([developers.facebook.com](https://developers.facebook.com))
+| Logiciel | Version Minimale | Recommandée |
+|----------|------------------|-------------|
+| **Node.js** | 18.0+ | 20.0+ LTS |
+| **npm** | 9.0+ | 10.0+ |
+| **MySQL** | 8.0+ | 8.0+ |
+| **Git** | 2.30+ | Latest |
 
 ---
 
@@ -125,7 +99,7 @@ Avant de commencer, assurez-vous d'avoir installé :
 ```bash
 # Cloner le repository
 git clone <repository-url>
-cd real-estate-app
+cd real-estate-agency
 
 # Vérifier la version de Node.js
 node --version
@@ -152,7 +126,6 @@ npm list --depth=0
 - `react` & `react-dom` - Bibliothèque UI
 - `prisma` & `@prisma/client` - ORM base de données
 - `next-auth` - Authentification
-- `stripe` - Paiements en ligne
 - `tailwindcss` - Framework CSS
 - `typescript` - Typage statique
 
@@ -189,35 +162,9 @@ NEXTAUTH_SECRET="votre-clé-secrète-super-longue-et-sécurisée"
 # Générez une clé sécurisée avec : openssl rand -base64 32
 
 # ===========================================
-# 🔑 OAUTH PROVIDERS (OPTIONNEL)
-# ===========================================
-# Google OAuth
-GOOGLE_CLIENT_ID="votre-google-client-id.googleusercontent.com"
-GOOGLE_CLIENT_SECRET="votre-google-client-secret"
-
-# Facebook OAuth  
-FACEBOOK_CLIENT_ID="votre-facebook-app-id"
-FACEBOOK_CLIENT_SECRET="votre-facebook-app-secret"
-
-# ===========================================
-# 💳 STRIPE PAIEMENTS
-# ===========================================
-STRIPE_PUBLISHABLE_KEY="pk_test_51..."
-STRIPE_SECRET_KEY="sk_test_51..."
-STRIPE_WEBHOOK_SECRET="whsec_..."
-
-# ===========================================
 # 🌐 CONFIGURATION APPLICATION
 # ===========================================
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-
-# ===========================================
-# 📧 EMAIL (OPTIONNEL)
-# ===========================================
-SMTP_HOST="smtp.gmail.com"
-SMTP_PORT="587"
-SMTP_USER="votre-email@gmail.com"
-SMTP_PASS="votre-mot-de-passe-app"
 ```
 
 #### **3.3 Générer une clé NEXTAUTH_SECRET sécurisée**
@@ -228,9 +175,6 @@ openssl rand -base64 32
 
 # Méthode 2 : Node.js
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-
-# Méthode 3 : En ligne
-# Visitez : https://generate-secret.vercel.app/32
 ```
 
 ---
@@ -291,66 +235,9 @@ npx tsx prisma/seed.ts
 
 ---
 
-### 💳 **5. Configuration Stripe (Paiements)**
+### 🚀 **5. Lancement de l'Application**
 
-#### **5.1 Créer un compte Stripe**
-
-1. Allez sur [stripe.com](https://stripe.com) et créez un compte
-2. Activez le mode Test pour le développement
-3. Notez vos clés API dans le Dashboard
-
-#### **5.2 Récupérer les clés API**
-
-Dans le Dashboard Stripe :
-- **Clé publique** : `pk_test_...` (commence par `pk_test_`)
-- **Clé secrète** : `sk_test_...` (commence par `sk_test_`)
-
-#### **5.3 Configurer les Webhooks**
-
-1. Allez dans **Développeurs** > **Webhooks**
-2. Cliquez sur **Ajouter un endpoint**
-3. URL : `http://localhost:3000/api/stripe/webhook`
-4. Événements à sélectionner :
-   - `payment_intent.succeeded`
-   - `payment_intent.payment_failed`
-   - `payment_intent.canceled`
-   - `checkout.session.completed`
-5. Copiez le **Secret de signature** (`whsec_...`)
-
-#### **5.4 Tester les paiements**
-
-Utilisez ces cartes de test Stripe :
-- ✅ **Succès** : `4242 4242 4242 4242`
-- ❌ **Échec** : `4000 0000 0000 0002`
-- 🔐 **3D Secure** : `4000 0027 6000 3184`
-
----
-
-### 🔑 **6. Configuration OAuth (Optionnel)**
-
-#### **6.1 Google OAuth**
-
-1. Allez sur [Google Cloud Console](https://console.cloud.google.com)
-2. Créez un nouveau projet ou sélectionnez-en un
-3. Activez l'API Google+ 
-4. Créez des identifiants OAuth 2.0
-5. Ajoutez les URI de redirection :
-   - `http://localhost:3000/api/auth/callback/google`
-   - `https://votre-domaine.com/api/auth/callback/google`
-
-#### **6.2 Facebook OAuth**
-
-1. Allez sur [Facebook Developers](https://developers.facebook.com)
-2. Créez une nouvelle application
-3. Ajoutez le produit "Facebook Login"
-4. Configurez les URI de redirection :
-   - `http://localhost:3000/api/auth/callback/facebook`
-
----
-
-### 🚀 **7. Lancement de l'Application**
-
-#### **7.1 Démarrage en mode développement**
+#### **5.1 Démarrage en mode développement**
 
 ```bash
 # Lancer le serveur de développement
@@ -360,14 +247,13 @@ npm run dev
 # 🌐 http://localhost:3000
 ```
 
-#### **7.2 Vérifications de fonctionnement**
+#### **5.2 Vérifications de fonctionnement**
 
 1. **Page d'accueil** : http://localhost:3000
 2. **Admin** : http://localhost:3000/admin
-3. **API Health** : http://localhost:3000/api/health
-4. **Base de données** : http://localhost:5555 (Prisma Studio)
+3. **Base de données** : http://localhost:5555 (Prisma Studio)
 
-#### **7.3 Comptes de démonstration**
+#### **5.3 Comptes de démonstration**
 
 | Rôle | Email | Mot de passe | Accès |
 |------|-------|--------------|-------|
@@ -377,9 +263,9 @@ npm run dev
 
 ---
 
-### ✅ **8. Vérification de l'Installation**
+### ✅ **6. Vérification de l'Installation**
 
-#### **8.1 Checklist de vérification**
+#### **6.1 Checklist de vérification**
 
 - [ ] ✅ Page d'accueil charge correctement
 - [ ] ✅ Connexion admin fonctionne
@@ -390,7 +276,7 @@ npm run dev
 - [ ] ✅ Cartes interactives s'affichent
 - [ ] ✅ Design responsive sur mobile
 
-#### **8.2 Tests de fonctionnalités**
+#### **6.2 Tests de fonctionnalités**
 
 ```bash
 # Tester la base de données
@@ -407,7 +293,7 @@ npm start
 
 ---
 
-### 🔧 **9. Dépannage Courant**
+### 🔧 **7. Dépannage Courant**
 
 #### **Erreurs fréquentes et solutions**
 
@@ -415,7 +301,6 @@ npm start
 |--------|-------|----------|
 | `JWT_SESSION_ERROR` | NEXTAUTH_SECRET manquant | Ajouter une clé secrète dans `.env.local` |
 | `PrismaClientInitializationError` | Base de données inaccessible | Vérifier DATABASE_URL et MySQL |
-| `Module not found: stripe` | Dépendances manquantes | Exécuter `npm install` |
 | `Port 3000 already in use` | Port occupé | Utiliser `npx kill-port 3000` |
 
 #### **Commandes de diagnostic**
@@ -439,41 +324,16 @@ tail -f .next/trace
 
 ---
 
-### 📊 **10. Monitoring et Logs**
-
-#### **10.1 Logs de développement**
-
-```bash
-# Logs du serveur Next.js
-npm run dev -- --turbo
-
-# Logs de la base de données
-npx prisma studio
-
-# Logs Stripe (webhooks)
-stripe listen --forward-to localhost:3000/api/stripe/webhook
-```
-
-#### **10.2 Outils de debugging**
-
-- **React DevTools** - Extension navigateur
-- **Prisma Studio** - Interface base de données
-- **Stripe CLI** - Testing webhooks
-- **Next.js DevTools** - Performance monitoring
-
----
-
-## 📁 **Structure Détaillée du Projet**
+## 📁 **Structure du Projet**
 
 ```
-📦 real-estate-app/
+📦 real-estate-agency/
 ├── 📁 prisma/                      # Configuration base de données
 │   ├── 📄 schema.prisma           # Schéma de la base de données
 │   └── 📄 seed.ts                 # Script de données de test
 │
 ├── 📁 public/                      # Ressources statiques
 │   ├── 📄 favicon.ico             # Icône du site
-│   ├── 📄 logo.png                # Logo de l'agence
 │   └── 📄 robots.txt              # Instructions pour robots
 │
 ├── 📁 src/                         # Code source principal
@@ -483,16 +343,15 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 │   │   │   ├── 📄 page.tsx        # Tableau de bord principal
 │   │   │   ├── 📁 properties/     # Gestion des propriétés
 │   │   │   │   ├── 📄 page.tsx    # Liste des propriétés
-│   │   │   │   ├── 📁 new/        # Ajout de propriété
-│   │   │   │   │   └── 📄 page.tsx # Formulaire d'ajout
-│   │   │   │   └── 📁 [id]/       # Édition de propriété
-│   │   │   │       └── 📁 edit/   
-│   │   │   │           └── 📄 page.tsx
+│   │   │   │   └── 📁 new/        # Ajout de propriété
+│   │   │   │       └── 📄 page.tsx # Formulaire d'ajout
 │   │   │   ├── 📁 users/          # Gestion des utilisateurs
 │   │   │   ├── 📁 payments/       # Suivi des paiements
 │   │   │   ├── 📁 messages/       # Centre de messages
+│   │   │   ├── 📁 appointments/   # Gestion des rendez-vous
 │   │   │   ├── 📁 blog/           # Gestion du blog
 │   │   │   ├── 📁 analytics/      # Statistiques avancées
+│   │   │   ├── 📁 profile/        # Gestion du profil admin
 │   │   │   └── 📁 settings/       # Paramètres généraux
 │   │   │
 │   │   ├── 📁 auth/               # 🔐 Authentification
@@ -513,8 +372,7 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 │   │   │   ├── 📁 auth/           # Authentification NextAuth
 │   │   │   ├── 📁 properties/     # API des propriétés
 │   │   │   ├── 📁 stripe/         # Intégration Stripe
-│   │   │   ├── 📁 users/          # Gestion utilisateurs
-│   │   │   └── 📁 upload/         # Upload de fichiers
+│   │   │   └── 📁 register/       # Inscription utilisateurs
 │   │   │
 │   │   ├── 📄 about/page.tsx      # À propos de l'agence
 │   │   ├── 📄 contact/page.tsx    # Page de contact
@@ -524,7 +382,6 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 │   │   ├── 📄 profile/page.tsx    # Profil utilisateur
 │   │   ├── 📄 favorites/page.tsx  # Favoris utilisateur
 │   │   ├── 📄 privacy/page.tsx    # Politique de confidentialité
-│   │   ├── 📄 terms/page.tsx      # Conditions générales
 │   │   ├── 📄 layout.tsx          # Layout racine
 │   │   ├── 📄 page.tsx            # Page d'accueil
 │   │   ├── 📄 globals.css         # Styles globaux
@@ -542,44 +399,28 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 │   │   ├── 📁 layout/             # Composants de mise en page
 │   │   │   ├── 📄 Header.tsx      # En-tête du site
 │   │   │   ├── 📄 Footer.tsx      # Pied de page
-│   │   │   └── 📄 Sidebar.tsx     # Barre latérale admin
 │   │   │
 │   │   ├── 📁 property/           # Composants propriétés
-│   │   │   ├── 📄 PropertyCard.tsx    # Carte de propriété
-│   │   │   ├── 📄 PropertyGallery.tsx # Galerie d'images
-│   │   │   └── 📄 PropertyFilters.tsx # Filtres de recherche
+│   │   │   └── 📄 PropertyCard.tsx    # Carte de propriété
 │   │   │
 │   │   ├── 📁 maps/               # Composants de cartes
-│   │   │   ├── 📄 PropertyMap.tsx # Carte interactive
-│   │   │   └── 📄 MapMarker.tsx   # Marqueurs de propriétés
-│   │   │
-│   │   ├── 📁 forms/              # Formulaires spécialisés
-│   │   │   ├── 📄 ContactForm.tsx # Formulaire de contact
-│   │   │   ├── 📄 SearchForm.tsx  # Formulaire de recherche
-│   │   │   └── 📄 EstimationForm.tsx # Formulaire d'estimation
+│   │   │   └── 📄 PropertyMap.tsx # Carte interactive
 │   │   │
 │   │   ├── 📁 seo/                # Composants SEO
-│   │   │   ├── 📄 JsonLd.tsx      # Données structurées
-│   │   │   └── 📄 MetaTags.tsx    # Balises meta
+│   │   │   └── 📄 JsonLd.tsx      # Données structurées
 │   │   │
 │   │   └── 📁 providers/          # Providers React
-│   │       ├── 📄 SessionProvider.tsx # Contexte d'authentification
-│   │       └── 📄 ThemeProvider.tsx   # Contexte de thème
+│   │       └── 📄 SessionProvider.tsx # Contexte d'authentification
 │   │
 │   ├── 📁 lib/                    # 🛠️ Utilitaires et configurations
 │   │   ├── 📄 auth.ts             # Configuration NextAuth
 │   │   ├── 📄 prisma.ts           # Client Prisma
 │   │   ├── 📄 stripe.ts           # Configuration Stripe
 │   │   ├── 📄 seo.ts              # Utilitaires SEO
-│   │   ├── 📄 utils.ts            # Fonctions utilitaires
-│   │   ├── 📄 validations.ts      # Schémas de validation Zod
-│   │   └── 📄 constants.ts        # Constantes de l'application
+│   │   └── 📄 utils.ts            # Fonctions utilitaires
 │   │
 │   └── 📁 types/                  # 📝 Types TypeScript
-│       ├── 📄 next-auth.d.ts      # Types NextAuth personnalisés
-│       ├── 📄 property.ts         # Types des propriétés
-│       ├── 📄 user.ts             # Types des utilisateurs
-│       └── 📄 global.ts           # Types globaux
+│       └── 📄 next-auth.d.ts      # Types NextAuth personnalisés
 │
 ├── 📄 package.json                # Dépendances et scripts
 ├── 📄 next.config.js              # Configuration Next.js
@@ -588,9 +429,7 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 ├── 📄 tsconfig.json               # Configuration TypeScript
 ├── 📄 .env.example                # Exemple de variables d'environnement
 ├── 📄 .gitignore                  # Fichiers ignorés par Git
-├── 📄 README.md                   # Documentation du projet
-├── 📄 FEATURES.md                 # Documentation des fonctionnalités
-└── 📄 DEPLOYMENT.md               # Guide de déploiement
+└── 📄 README.md                   # Documentation du projet
 ```
 
 ---
@@ -635,23 +474,18 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 ### **Authentification Robuste**
 - ✅ **NextAuth.js** - Sessions sécurisées JWT/Database
-- ✅ **Hashage bcrypt** - Mots de passe chiffrés (12 rounds)
-- ✅ **OAuth 2.0** - Google & Facebook intégrés
+- ✅ **Hashage bcrypt** - Mots de passe chiffrés
 - ✅ **CSRF Protection** - Tokens anti-falsification
-- ✅ **Rate Limiting** - Protection contre le spam
 
 ### **Protection des Données**
 - ✅ **RGPD Compliant** - Politique de confidentialité détaillée
-- ✅ **Validation Zod** - Sanitisation des entrées utilisateur
+- ✅ **Validation** - Sanitisation des entrées utilisateur
 - ✅ **Headers sécurisés** - HSTS, CSP, X-Frame-Options
-- ✅ **Chiffrement HTTPS** - SSL/TLS en production
-- ✅ **Audit de sécurité** - Dépendances régulièrement mises à jour
 
 ### **Contrôle d'Accès**
 - 🔐 **Rôles granulaires** : Admin, Agent, Client
 - 🔐 **Permissions** : CRUD basé sur les rôles
 - 🔐 **Middleware** : Protection des routes sensibles
-- 🔐 **API Security** : Authentification sur toutes les routes
 
 ---
 
@@ -682,11 +516,9 @@ xl: 1280px  /* Desktops */
 ```bash
 # 🚀 Développement
 npm run dev              # Serveur de développement avec hot-reload
-npm run dev:turbo        # Mode turbo pour performances accrues
 npm run build            # Build de production optimisé
 npm run start            # Serveur de production
 npm run lint             # Vérification ESLint + Prettier
-npm run lint:fix         # Correction automatique du code
 npm run type-check       # Vérification TypeScript
 ```
 
@@ -695,19 +527,8 @@ npm run type-check       # Vérification TypeScript
 # 🗄️ Prisma & Base de données
 npm run db:generate      # Génération du client Prisma
 npm run db:push          # Application du schéma (développement)
-npm run db:migrate       # Création de migration (production)
 npm run db:seed          # Population avec données de test
-npm run db:reset         # Réinitialisation complète
 npm run db:studio        # Interface graphique (localhost:5555)
-```
-
-### **Scripts Utilitaires**
-```bash
-# 🧹 Maintenance
-npm run clean            # Nettoyage des caches (.next, node_modules)
-npm run analyze          # Analyse du bundle de production
-npm run test             # Tests unitaires (si configurés)
-npm run format           # Formatage du code avec Prettier
 ```
 
 ---
@@ -737,139 +558,33 @@ npm i -g vercel
 vercel --prod
 ```
 
-### **🐳 Docker (Avancé)**
-
-```dockerfile
-# Dockerfile exemple
-FROM node:18-alpine AS base
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-FROM base AS build
-COPY . .
-RUN npm run build
-
-FROM base AS runtime
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-### **☁️ Autres Plateformes**
-
-| Plateforme | Base de données | Avantages |
-|------------|-----------------|-----------|
-| **Netlify** | Supabase/PlanetScale | JAMstack, Functions |
-| **Railway** | PostgreSQL intégré | Full-stack, simple |
-| **DigitalOcean** | MySQL Managed | Contrôle total, prix |
-| **AWS Amplify** | RDS MySQL | Écosystème AWS |
-
 ---
 
-## 📊 **Bases de Données Production**
-
-### **🌟 PlanetScale (Recommandé)**
-- ✅ **MySQL Serverless** - Auto-scaling
-- ✅ **Branching** - Git-like pour la DB
-- ✅ **Global replicas** - Latence minimale
-- ✅ **Prisma compatible** - Migration facile
-
-### **🐘 Supabase**
-- ✅ **PostgreSQL** - Open source
-- ✅ **Auth intégrée** - Alternative à NextAuth
-- ✅ **Real-time** - WebSocket inclus
-- ✅ **API REST/GraphQL** - Auto-générée
-
-### **🚂 Railway**
-- ✅ **PostgreSQL/MySQL** - Choix flexible
-- ✅ **Déploiement simple** - Une commande
-- ✅ **Monitoring** - Métriques incluses
-- ✅ **Prix transparent** - Pay-as-you-use
-
----
-
-## 📝 **Guide d'Utilisation Avancé**
+## 📝 **Guide d'Utilisation**
 
 ### **🏠 Gestion des Propriétés**
 
 #### **Workflow Complet**
 1. **Connexion Admin** → Dashboard
 2. **Propriétés** → "Ajouter une propriété"
-3. **Formulaire 4 étapes** :
-   - 📋 Informations générales
-   - 📍 Localisation + GPS
-   - 🏠 Caractéristiques + équipements
-   - 📸 Médias + publication
+3. **Formulaire complet** avec validation
 4. **Validation** → Publication automatique
 5. **Gestion** → Modification, désactivation
 
-#### **Fonctionnalités Avancées**
+#### **Fonctionnalités Disponibles**
 - 🖼️ **Upload multiple** - Glisser-déposer
 - 🗺️ **Géolocalisation** - Coordonnées GPS automatiques
-- 🎥 **Médias riches** - Photos, vidéos, visite 360°
+- 🎥 **Médias riches** - Photos et vidéos
 - 🏷️ **SEO intégré** - URLs optimisées, meta tags
-- 📊 **Analytics** - Vues, favoris, contacts
+- 📊 **Analytics** - Vues et statistiques
 
-### **💳 Configuration Paiements Stripe**
+### **👤 Gestion du Profil Admin**
 
-#### **Mode Test (Développement)**
-```bash
-# Clés de test Stripe
-STRIPE_PUBLISHABLE_KEY="pk_test_..."
-STRIPE_SECRET_KEY="sk_test_..."
-
-# Cartes de test
-4242 4242 4242 4242  # ✅ Succès
-4000 0000 0000 0002  # ❌ Échec
-4000 0027 6000 3184  # 🔐 3D Secure
-```
-
-#### **Webhooks Configuration**
-1. **Dashboard Stripe** → Développeurs → Webhooks
-2. **URL endpoint** : `https://votredomaine.com/api/stripe/webhook`
-3. **Événements** :
-   ```
-   payment_intent.succeeded
-   payment_intent.payment_failed
-   checkout.session.completed
-   invoice.payment_succeeded
-   customer.subscription.updated
-   ```
-
-### **🎨 Personnalisation Avancée**
-
-#### **Thème et Couleurs**
-```typescript
-// tailwind.config.ts
-export default {
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          50: '#f0f9ff',
-          600: '#2563eb',  // Couleur principale
-          800: '#1e40af',
-        },
-        // Personnalisez selon votre marque
-      }
-    }
-  }
-}
-```
-
-#### **SEO et Métadonnées**
-```typescript
-// src/lib/seo.ts
-export const generateMetadata = (page: string) => ({
-  title: `${page} | Agence Immobilière Premium`,
-  description: 'Description personnalisée...',
-  openGraph: {
-    images: ['/logo-og.png'],
-  }
-})
-```
+#### **Fonctionnalités**
+- 📝 **Informations personnelles** - Nom, email, téléphone, adresse
+- 💼 **Informations professionnelles** - Poste, département, spécialités
+- 🔐 **Sécurité** - Changement de mot de passe, 2FA
+- 📸 **Avatar** - Gestion de la photo de profil
 
 ---
 
@@ -877,9 +592,7 @@ export const generateMetadata = (page: string) => ({
 
 ### **📊 Monitoring Production**
 - **Vercel Analytics** - Performance et erreurs
-- **Sentry** - Tracking des erreurs détaillé
-- **Google Analytics** - Comportement utilisateur
-- **Prisma Metrics** - Performance base de données
+- **Prisma Studio** - Interface base de données
 
 ### **🔄 Mises à jour**
 ```bash
@@ -900,7 +613,6 @@ npm audit fix
 | Build failed | `npm run build` | Vérifier types TypeScript |
 | DB connection | `npx prisma studio` | Vérifier DATABASE_URL |
 | Auth errors | Logs NextAuth | Vérifier NEXTAUTH_SECRET |
-| Stripe webhook | Dashboard Stripe | Vérifier endpoint URL |
 
 ---
 
@@ -909,8 +621,8 @@ npm audit fix
 ### **Workflow de Contribution**
 ```bash
 # 1. Fork et clone
-git clone https://github.com/votre-username/real-estate-app
-cd real-estate-app
+git clone https://github.com/votre-username/real-estate-agency
+cd real-estate-agency
 
 # 2. Créer une branche feature
 git checkout -b feature/nouvelle-fonctionnalite
@@ -931,18 +643,15 @@ git push origin feature/nouvelle-fonctionnalite
 - ✅ **ESLint + Prettier** - Formatage automatique
 - ✅ **TypeScript strict** - Typage complet
 - ✅ **Conventional Commits** - Messages standardisés
-- ✅ **Tests unitaires** - Coverage > 80%
-- ✅ **Documentation** - JSDoc pour les fonctions
 
 ---
 
 ## 📞 **Support et Communauté**
 
 ### **🆘 Obtenir de l'Aide**
-- 📖 **Documentation** - README et FEATURES.md
+- 📖 **Documentation** - README et code source
 - 🐛 **Issues GitHub** - Bugs et demandes de fonctionnalités
 - 💬 **Discussions** - Questions générales
-- 📧 **Support direct** - contact@agence-immobiliere.fr
 
 ---
 
@@ -955,7 +664,6 @@ git push origin feature/nouvelle-fonctionnalite
 - 🎨 Tailwind CSS - Framework CSS utilitaire  
 - 🗄️ Prisma - ORM moderne pour bases de données
 - 🔐 NextAuth.js - Authentification complète
-- 💳 Stripe - Paiements sécurisés
 - 🗺️ Leaflet - Cartes interactives open-source
 
 ---

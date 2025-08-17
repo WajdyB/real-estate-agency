@@ -145,7 +145,7 @@ export default function ServicesPage() {
       service: 'Achat Appartement',
       content: 'Service exceptionnel ! L\'équipe m\'a trouvé l\'appartement parfait en 3 semaines.',
       rating: 5,
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5e5?w=100'
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'
     },
     {
       name: 'Pierre Martin',

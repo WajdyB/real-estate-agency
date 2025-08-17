@@ -34,12 +34,41 @@ async function main() {
   })
 
   // Create sample properties
-  const properties = [
+  const properties: Array<{
+    title: string;
+    description: string;
+    price: number;
+    type: 'APARTMENT' | 'HOUSE' | 'STUDIO';
+    surface: number;
+    rooms: number;
+    bedrooms: number;
+    bathrooms: number;
+    floor?: number;
+    totalFloors?: number;
+    yearBuilt: number;
+    energyClass: string;
+    address: string;
+    city: string;
+    zipCode: string;
+    latitude: number;
+    longitude: number;
+    features: {
+      elevator: boolean;
+      balcony: boolean;
+      parking: boolean;
+      cellar: boolean;
+      garden: boolean;
+      terrace: boolean;
+    };
+    images: string[];
+    isPublished: boolean;
+    isFeatured: boolean;
+  }> = [
     {
       title: 'Appartement moderne 3 pièces - Paris 15ème',
       description: 'Magnifique appartement de 75m² entièrement rénové avec goût. Situé au 4ème étage avec ascenseur, il offre une vue dégagée sur un jardin privatif. Composé d\'un séjour lumineux, 2 chambres, cuisine équipée, salle de bain moderne et WC séparé. Proche métro et commerces.',
       price: 485000,
-      type: 'APARTMENT',
+      type: 'APARTMENT' as const,
       surface: 75,
       rooms: 3,
       bedrooms: 2,
@@ -73,7 +102,7 @@ async function main() {
       title: 'Maison familiale 5 pièces avec jardin - Neuilly-sur-Seine',
       description: 'Belle maison bourgeoise de 120m² sur 3 niveaux avec jardin de 200m². Idéale pour une famille, elle propose un salon-séjour de 35m², cuisine moderne ouverte, 4 chambres dont une suite parentale, 2 salles de bain. Garage et cave. Quartier résidentiel calme.',
       price: 1250000,
-      type: 'HOUSE',
+      type: 'HOUSE' as const,
       surface: 120,
       rooms: 5,
       bedrooms: 4,
@@ -105,7 +134,7 @@ async function main() {
       title: 'Studio lumineux - Quartier Latin',
       description: 'Charmant studio de 25m² au coeur du Quartier Latin. Entièrement meublé et équipé, il dispose d\'un coin nuit en mezzanine, d\'un séjour avec kitchenette et d\'une salle d\'eau moderne. Idéal investissement locatif ou pied-à-terre parisien.',
       price: 295000,
-      type: 'STUDIO',
+      type: 'STUDIO' as const,
       surface: 25,
       rooms: 1,
       bedrooms: 0,

@@ -19,7 +19,7 @@ import {
   Phone,
   Mail,
   Car,
-  Elevator,
+  ArrowUpDown,
   TreePine,
   Wifi,
   Shield,
@@ -78,7 +78,7 @@ const mockProperty = {
     name: 'Sophie Martin',
     email: 'sophie.martin@agence-premium.fr',
     phone: '+33 1 23 45 67 89',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5e5?w=150',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
   }
 }
 
@@ -340,7 +340,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {property.features.elevator && (
                         <div className="flex items-center space-x-2">
-                          <Elevator className="w-4 h-4 text-green-600" />
+                          <ArrowUpDown className="w-4 h-4 text-green-600" />
                           <span className="text-sm">Ascenseur</span>
                         </div>
                       )}

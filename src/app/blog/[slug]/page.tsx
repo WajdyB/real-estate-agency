@@ -128,7 +128,7 @@ const mockBlogPost = {
   `,
   image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200',
   author: 'Sophie Martin',
-  authorImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b5e5?w=150',
+      authorImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
   authorBio: 'Experte en immobilier depuis plus de 10 ans, Sophie accompagne les primo-accédants dans leur projet d\'achat.',
   category: 'Conseils Achat',
   readingTime: '8 min',

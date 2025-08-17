@@ -56,7 +56,7 @@ export default function AboutPage() {
       name: 'Marie Dubois',
       role: 'Fondatrice & Directrice',
       experience: '20 ans d\'expérience',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5e5?w=300',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300',
       bio: 'Diplômée en droit immobilier, Marie a fondé l\'agence avec la vision de révolutionner l\'expérience immobilière.',
       specialities: ['Direction', 'Stratégie', 'Développement'],
     },

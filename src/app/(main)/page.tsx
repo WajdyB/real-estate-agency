@@ -107,7 +107,7 @@ const testimonials = [
     role: 'Propriétaire',
     content: 'Service exceptionnel ! L\'équipe m\'a accompagnée tout au long de la vente de mon appartement. Professionnalisme et résultats au rendez-vous.',
     rating: 5,
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b5e5?w=100'
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'
   },
   {
     name: 'Jean Martin',
