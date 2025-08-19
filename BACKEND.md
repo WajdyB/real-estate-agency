@@ -12,6 +12,9 @@ This document provides a comprehensive overview of the Real Estate Agency backen
 - **Payment Processing**: Stripe
 - **Validation**: Zod
 - **Language**: TypeScript
+- **File Upload**: Custom upload system with validation
+- **Maps**: Leaflet integration
+- **Email**: Nodemailer for notifications
 
 ## Database Schema
 
@@ -40,33 +43,28 @@ This document provides a comprehensive overview of the Real Estate Agency backen
   title: string
   description: string
   price: Decimal
-  type: 'APARTMENT' | 'HOUSE' | 'STUDIO' | 'LOFT' | 'VILLA' | 'COMMERCIAL' | 'LAND' | 'PARKING'
+  type: 'APARTMENT' | 'HOUSE' | 'STUDIO'
   status: 'AVAILABLE' | 'RESERVED' | 'SOLD' | 'RENTED' | 'DRAFT'
   surface: number
   rooms: number
   bedrooms: number
   bathrooms: number
-  floor: number
-  totalFloors: number
-  yearBuilt: number
-  energyClass: string
+  floor?: number
+  totalFloors?: number
+  yearBuilt?: number
+  energyClass?: string
   address: string
   city: string
   zipCode: string
   country: string
-  latitude: number
-  longitude: number
-  features: JSON
-  images: JSON
-  documents: JSON
-  virtualTour: string
-  videoUrl: string
+  latitude?: number
+  longitude?: number
+  images: string[]
   isPublished: boolean
   isFeatured: boolean
   views: number
   createdAt: DateTime
   updatedAt: DateTime
-  publishedAt: DateTime
   userId: string (foreign key)
 }
 ```
@@ -155,7 +153,9 @@ The backend uses NextAuth.js for authentication with the following features:
 - Write reviews
 - Make payments
 - Manage profile
-- Create property alerts
+- View property alerts
+- Contact agents
+- Save search preferences
 
 #### AGENT (Real Estate Agent)
 - All CLIENT permissions
@@ -163,6 +163,9 @@ The backend uses NextAuth.js for authentication with the following features:
 - View appointment requests
 - Access basic analytics
 - Manage property listings
+- Handle client messages
+- Process payments
+- Manage blog content
 
 #### ADMIN (Administrator)
 - All AGENT permissions
@@ -171,6 +174,9 @@ The backend uses NextAuth.js for authentication with the following features:
 - Manage system settings
 - Moderate reviews
 - Manage blog content
+- Manage payments and refunds
+- Configure application settings
+- Access detailed reports
 
 ## API Endpoints
 

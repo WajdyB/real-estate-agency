@@ -1,6 +1,6 @@
 # 🏠 Agence Immobilière Premium
 
-Une application web moderne pour agences immobilières, développée avec Next.js 14, MySQL, et les dernières technologies web. Interface professionnelle et sécurisée.
+Une application web moderne pour agences immobilières, développée avec Next.js 14, MySQL, et les dernières technologies web. Interface professionnelle et sécurisée avec système de gestion complet.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
@@ -9,7 +9,7 @@ Une application web moderne pour agences immobilières, développée avec Next.j
 
 ## 🌟 Aperçu
 
-Application fullstack moderne offrant une expérience utilisateur exceptionnelle pour clients et agents immobiliers, avec interface d'administration complète et design moderne.
+Application fullstack moderne offrant une expérience utilisateur exceptionnelle pour clients et agents immobiliers, avec interface d'administration complète et design moderne. Système de gestion intégré avec authentification, gestion des propriétés, rendez-vous, paiements et analytics.
 
 ## ✨ Fonctionnalités Implémentées
 
@@ -19,9 +19,9 @@ Application fullstack moderne offrant une expérience utilisateur exceptionnelle
 - 🏠 **Page d'accueil** - Présentation élégante avec recherche rapide et propriétés vedettes
 - 🏘️ **Catalogue complet** - Liste des biens avec filtres avancés (type, prix, superficie, localisation, pièces)
 - 🔍 **Recherche avancée** - Interface avec carte interactive Leaflet/OpenStreetMap et géolocalisation
-- 📋 **Fiche détaillée** - Galerie photos HD, caractéristiques complètes
+- 📋 **Fiche détaillée** - Galerie photos HD, caractéristiques complètes, carte interactive
 - 📱 **Blog immobilier** - Articles, actualités, conseils avec système de catégories
-- 📞 **Contact multi-canal** - Formulaire de contact
+- 📞 **Contact multi-canal** - Formulaire de contact avec validation
 - ℹ️ **À propos** - Présentation de l'équipe, histoire, valeurs
 - 🛠️ **Services détaillés** - Achat, vente, investissement, gestion locative
 - 📊 **Estimation en ligne** - Outil d'évaluation gratuite
@@ -30,39 +30,46 @@ Application fullstack moderne offrant une expérience utilisateur exceptionnelle
 - 🔐 **Authentification complète** - Email/password avec NextAuth.js
 - 👤 **Profil personnalisé** - Gestion des informations et préférences
 - ❤️ **Favoris avancés** - Sauvegarde et organisation des propriétés préférées
+- 📅 **Rendez-vous** - Système de prise de rendez-vous pour visites
+- 💳 **Paiements** - Intégration Stripe pour réservations et commissions
 
 ### 🛠️ **Back-office (Administration)**
 
 #### **Tableau de Bord Analytique**
 - 📊 **Statistiques temps réel** - Propriétés en ligne, visites, utilisateurs actifs
-- 💹 **Métriques financières** - Vue d'ensemble des transactions
+- 💹 **Métriques financières** - Vue d'ensemble des transactions et revenus
 - 📈 **Graphiques interactifs** - Évolution des ventes et performance
+- 👥 **Gestion utilisateurs** - Création, modification, suppression avec rôles
 
 #### **Gestion Complète des Propriétés**
-- ➕ **Ajout guidé** - Formulaire complet avec validation
-- 🖼️ **Upload média** - Images HD et gestion des médias
-- ✏️ **Édition avancée** - Modification complète, gestion du statut
+- ➕ **Ajout guidé** - Formulaire complet avec validation et upload d'images
+- 🖼️ **Upload média** - Images HD et gestion des médias avec prévisualisation
+- ✏️ **Édition avancée** - Modification complète, gestion du statut, mise à jour des images
 - 🗺️ **Géolocalisation** - Positionnement GPS précis sur carte
 - 🏷️ **Gestion des tags** - Équipements, caractéristiques, mise en vedette
+- 📊 **Analytics propriétés** - Vues, favoris, statistiques détaillées
 
 #### **Administration Utilisateurs**
-- 👥 **Gestion des rôles** - Admin, Agent, Client avec permissions
+- 👥 **Gestion des rôles** - Admin, Agent, Client avec permissions granulaires
 - 📝 **Profils détaillés** - Informations complètes et historique d'activité
+- 🔐 **Sécurité** - Changement de mot de passe, gestion des sessions
+- 📊 **Statistiques utilisateurs** - Activité, engagement, performance
 
 #### **Suivi Commercial**
-- 📅 **Rendez-vous** - Planning et gestion des rendez-vous
-- 💬 **Messages clients** - Centre de communication unifié
-- 📊 **Rapports détaillés** - Performance et statistiques
+- 📅 **Rendez-vous** - Planning et gestion des rendez-vous avec statuts
+- 💬 **Messages clients** - Centre de communication unifié avec templates
+- 📊 **Rapports détaillés** - Performance et statistiques commerciales
+- 💳 **Paiements** - Suivi des transactions, remboursements, commissions
 
 #### **Gestion de Contenu**
-- ✍️ **Blog management** - Création, édition, publication d'articles
+- ✍️ **Blog management** - Création, édition, publication d'articles avec éditeur riche
 - ⚙️ **Paramètres SEO** - Meta tags et URLs optimisées
-- 🏢 **Informations agence** - Coordonnées et services
+- 🏢 **Informations agence** - Coordonnées et services configurables
 
 #### **Gestion du Profil Admin**
 - 👤 **Profil personnel** - Gestion des informations personnelles et professionnelles
-- 🔐 **Sécurité** - Changement de mot de passe et authentification à deux facteurs
-- ⚙️ **Paramètres** - Configuration de l'application
+- 🔐 **Sécurité** - Changement de mot de passe et authentification sécurisée
+- ⚙️ **Paramètres** - Configuration de l'application et préférences
 
 ### 🔧 **Fonctionnalités Techniques Implémentées**
 
@@ -73,11 +80,13 @@ Application fullstack moderne offrant une expérience utilisateur exceptionnelle
 - 🗺️ **Cartes interactives** - Leaflet, OpenStreetMap, clustering
 - 🎨 **Tailwind CSS** - Design system cohérent, responsive
 - 📱 **TypeScript** - Sécurité du code, auto-complétion
+- 💳 **Stripe** - Paiements sécurisés et webhooks
 
 #### **SEO & Performance**
 - 🔍 **SEO optimisé** - Meta tags dynamiques, Schema.org, sitemap.xml
-- ⚡ **Performance** - Images optimisées, lazy loading
+- ⚡ **Performance** - Images optimisées, lazy loading, code splitting
 - 📱 **Responsive** - Design adaptatif mobile-first
+- 🚀 **PWA Ready** - Service workers et cache optimisé
 
 ## 🚀 Guide d'Installation
 
@@ -128,6 +137,9 @@ npm list --depth=0
 - `next-auth` - Authentification
 - `tailwindcss` - Framework CSS
 - `typescript` - Typage statique
+- `stripe` - Paiements
+- `leaflet` - Cartes interactives
+- `react-hot-toast` - Notifications
 
 ---
 
@@ -160,6 +172,13 @@ DATABASE_URL="mysql://username:password@localhost:3306/real_estate_db"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="votre-clé-secrète-super-longue-et-sécurisée"
 # Générez une clé sécurisée avec : openssl rand -base64 32
+
+# ===========================================
+# 💳 STRIPE (optionnel pour les paiements)
+# ===========================================
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
 
 # ===========================================
 # 🌐 CONFIGURATION APPLICATION
@@ -229,9 +248,9 @@ npx tsx prisma/seed.ts
 
 **Données de test créées :**
 - 👤 **Utilisateurs** : Admin, Agent, Clients
-- 🏠 **Propriétés** : Appartements, Maisons, Villas
+- 🏠 **Propriétés** : Appartements, Maisons, Villas avec images
 - 📝 **Articles de blog** : Conseils immobiliers
-- 📊 **Données de démonstration**
+- 📊 **Données de démonstration** complètes
 
 ---
 
@@ -275,6 +294,8 @@ npm run dev
 - [ ] ✅ Recherche et filtres opérationnels
 - [ ] ✅ Cartes interactives s'affichent
 - [ ] ✅ Design responsive sur mobile
+- [ ] ✅ Upload d'images fonctionne
+- [ ] ✅ Système de rendez-vous opérationnel
 
 #### **6.2 Tests de fonctionnalités**
 
@@ -302,6 +323,7 @@ npm start
 | `JWT_SESSION_ERROR` | NEXTAUTH_SECRET manquant | Ajouter une clé secrète dans `.env.local` |
 | `PrismaClientInitializationError` | Base de données inaccessible | Vérifier DATABASE_URL et MySQL |
 | `Port 3000 already in use` | Port occupé | Utiliser `npx kill-port 3000` |
+| `TypeScript errors` | Types manquants | Exécuter `npx tsc --noEmit` pour identifier |
 
 #### **Commandes de diagnostic**
 
@@ -333,6 +355,8 @@ tail -f .next/trace
 │   └── 📄 seed.ts                 # Script de données de test
 │
 ├── 📁 public/                      # Ressources statiques
+│   ├── 📁 images/                 # Images du site
+│   │   └── 📁 placeholders/       # Images par défaut
 │   ├── 📄 favicon.ico             # Icône du site
 │   └── 📄 robots.txt              # Instructions pour robots
 │
@@ -358,32 +382,42 @@ tail -f .next/trace
 │   │   │   ├── 📄 signin/         # Page de connexion
 │   │   │   └── 📄 signup/         # Page d'inscription
 │   │   │
-│   │   ├── 📁 properties/         # 🏠 Propriétés publiques
-│   │   │   ├── 📄 page.tsx        # Catalogue des biens
-│   │   │   └── 📁 [id]/           # Fiche détaillée
-│   │   │       └── 📄 page.tsx    
-│   │   │
-│   │   ├── 📁 blog/               # 📱 Blog immobilier
-│   │   │   ├── 📄 page.tsx        # Liste des articles
-│   │   │   └── 📁 [slug]/         # Article détaillé
-│   │   │       └── 📄 page.tsx    
+│   │   ├── 📁 (main)/             # 🏠 Pages publiques
+│   │   │   ├── 📄 page.tsx        # Page d'accueil
+│   │   │   ├── 📁 properties/     # Propriétés publiques
+│   │   │   │   ├── 📄 page.tsx    # Catalogue des biens
+│   │   │   │   └── 📁 [id]/       # Fiche détaillée
+│   │   │   │       └── 📄 page.tsx    
+│   │   │   ├── 📁 blog/           # 📱 Blog immobilier
+│   │   │   │   ├── 📄 page.tsx    # Liste des articles
+│   │   │   │   └── 📁 [slug]/     # Article détaillé
+│   │   │   │       └── 📄 page.tsx    
+│   │   │   ├── 📄 about/page.tsx  # À propos de l'agence
+│   │   │   ├── 📄 contact/page.tsx # Page de contact
+│   │   │   └── 📄 services/page.tsx # Services détaillés
 │   │   │
 │   │   ├── 📁 api/                # 🔌 Routes API
 │   │   │   ├── 📁 auth/           # Authentification NextAuth
 │   │   │   ├── 📁 properties/     # API des propriétés
+│   │   │   ├── 📁 users/          # API des utilisateurs
+│   │   │   ├── 📁 appointments/   # API des rendez-vous
+│   │   │   ├── 📁 payments/       # API des paiements
+│   │   │   ├── 📁 messages/       # API des messages
+│   │   │   ├── 📁 blog/           # API du blog
+│   │   │   ├── 📁 favorites/      # API des favoris
+│   │   │   ├── 📁 reviews/        # API des avis
+│   │   │   ├── 📁 search/         # API de recherche
+│   │   │   ├── 📁 upload/         # API d'upload
+│   │   │   ├── 📁 analytics/      # API des analytics
 │   │   │   ├── 📁 stripe/         # Intégration Stripe
-│   │   │   └── 📁 register/       # Inscription utilisateurs
+│   │   │   └── 📁 settings/       # API des paramètres
 │   │   │
-│   │   ├── 📄 about/page.tsx      # À propos de l'agence
-│   │   ├── 📄 contact/page.tsx    # Page de contact
-│   │   ├── 📄 services/page.tsx   # Services détaillés
 │   │   ├── 📄 estimation/page.tsx # Estimation en ligne
 │   │   ├── 📄 search/page.tsx     # Recherche avancée
 │   │   ├── 📄 profile/page.tsx    # Profil utilisateur
 │   │   ├── 📄 favorites/page.tsx  # Favoris utilisateur
 │   │   ├── 📄 privacy/page.tsx    # Politique de confidentialité
 │   │   ├── 📄 layout.tsx          # Layout racine
-│   │   ├── 📄 page.tsx            # Page d'accueil
 │   │   ├── 📄 globals.css         # Styles globaux
 │   │   ├── 📄 sitemap.ts          # Génération sitemap
 │   │   └── 📄 robots.ts           # Génération robots.txt
@@ -417,7 +451,11 @@ tail -f .next/trace
 │   │   ├── 📄 prisma.ts           # Client Prisma
 │   │   ├── 📄 stripe.ts           # Configuration Stripe
 │   │   ├── 📄 seo.ts              # Utilitaires SEO
-│   │   └── 📄 utils.ts            # Fonctions utilitaires
+│   │   ├── 📄 utils.ts            # Fonctions utilitaires
+│   │   ├── 📄 validation.ts       # Schémas de validation
+│   │   ├── 📄 errorHandler.ts     # Gestion d'erreurs
+│   │   ├── 📄 rateLimit.ts        # Limitation de taux
+│   │   └── 📄 cors.ts             # Configuration CORS
 │   │
 │   └── 📁 types/                  # 📝 Types TypeScript
 │       └── 📄 next-auth.d.ts      # Types NextAuth personnalisés
@@ -429,7 +467,9 @@ tail -f .next/trace
 ├── 📄 tsconfig.json               # Configuration TypeScript
 ├── 📄 .env.example                # Exemple de variables d'environnement
 ├── 📄 .gitignore                  # Fichiers ignorés par Git
-└── 📄 README.md                   # Documentation du projet
+├── 📄 README.md                   # Documentation du projet
+├── 📄 FRONTEND.md                 # Documentation frontend
+└── 📄 BACKEND.md                  # Documentation backend
 ```
 
 ---
@@ -476,6 +516,7 @@ tail -f .next/trace
 - ✅ **NextAuth.js** - Sessions sécurisées JWT/Database
 - ✅ **Hashage bcrypt** - Mots de passe chiffrés
 - ✅ **CSRF Protection** - Tokens anti-falsification
+- ✅ **Rate Limiting** - Protection contre les attaques
 
 ### **Protection des Données**
 - ✅ **RGPD Compliant** - Politique de confidentialité détaillée
@@ -533,6 +574,34 @@ npm run db:studio        # Interface graphique (localhost:5555)
 
 ---
 
+## 📊 **État Actuel de l'Implémentation**
+
+### ✅ **Fonctionnalités Complètement Implémentées**
+- 🔐 **Authentification** - NextAuth.js avec rôles et sessions
+- 🏠 **Gestion des propriétés** - CRUD complet avec upload d'images
+- 👥 **Gestion des utilisateurs** - Interface admin avec modals
+- 📅 **Système de rendez-vous** - Calendrier et gestion des statuts
+- 💬 **Messages** - Centre de communication unifié
+- 💳 **Paiements** - Intégration Stripe complète
+- 📝 **Blog** - Gestion des articles avec éditeur
+- 📊 **Analytics** - Tableaux de bord et statistiques
+- 🗺️ **Cartes interactives** - Leaflet avec géolocalisation
+- 🔍 **Recherche avancée** - Filtres et autocomplétion
+- ❤️ **Favoris** - Système de sauvegarde des propriétés
+- ⭐ **Avis et commentaires** - Système de notation
+- 📱 **Design responsive** - Mobile-first avec Tailwind CSS
+- 🖼️ **Upload d'images** - Système de gestion des médias
+- ⚙️ **Paramètres** - Configuration de l'application
+
+### 🚧 **Fonctionnalités en Développement**
+- 📧 **Notifications email** - Système d'alertes automatiques
+- 📱 **PWA** - Application web progressive
+- 🔔 **Notifications push** - Alertes en temps réel
+- 📈 **Rapports avancés** - Export PDF/Excel
+- 🌐 **Multi-langues** - Support internationalisation
+
+---
+
 ## 🚀 **Guide de Déploiement Production**
 
 ### **🌟 Vercel (Recommandé)**
@@ -567,16 +636,16 @@ vercel --prod
 #### **Workflow Complet**
 1. **Connexion Admin** → Dashboard
 2. **Propriétés** → "Ajouter une propriété"
-3. **Formulaire complet** avec validation
+3. **Formulaire complet** avec validation et upload d'images
 4. **Validation** → Publication automatique
-5. **Gestion** → Modification, désactivation
+5. **Gestion** → Modification, désactivation, mise à jour des images
 
 #### **Fonctionnalités Disponibles**
-- 🖼️ **Upload multiple** - Glisser-déposer
+- 🖼️ **Upload multiple** - Glisser-déposer avec prévisualisation
 - 🗺️ **Géolocalisation** - Coordonnées GPS automatiques
-- 🎥 **Médias riches** - Photos et vidéos
+- 🎥 **Médias riches** - Photos et vidéos optimisées
 - 🏷️ **SEO intégré** - URLs optimisées, meta tags
-- 📊 **Analytics** - Vues et statistiques
+- 📊 **Analytics** - Vues et statistiques détaillées
 
 ### **👤 Gestion du Profil Admin**
 
@@ -586,6 +655,14 @@ vercel --prod
 - 🔐 **Sécurité** - Changement de mot de passe, 2FA
 - 📸 **Avatar** - Gestion de la photo de profil
 
+### **📅 Système de Rendez-vous**
+
+#### **Fonctionnalités**
+- 📅 **Calendrier interactif** - Vue mensuelle et hebdomadaire
+- 🔔 **Notifications** - Email et SMS automatiques
+- 📊 **Statuts** - En attente, confirmé, terminé, annulé
+- 👥 **Gestion clients** - Informations de contact complètes
+
 ---
 
 ## 🔧 **Maintenance et Monitoring**
@@ -593,6 +670,7 @@ vercel --prod
 ### **📊 Monitoring Production**
 - **Vercel Analytics** - Performance et erreurs
 - **Prisma Studio** - Interface base de données
+- **Stripe Dashboard** - Suivi des paiements
 
 ### **🔄 Mises à jour**
 ```bash
@@ -613,6 +691,7 @@ npm audit fix
 | Build failed | `npm run build` | Vérifier types TypeScript |
 | DB connection | `npx prisma studio` | Vérifier DATABASE_URL |
 | Auth errors | Logs NextAuth | Vérifier NEXTAUTH_SECRET |
+| Image upload | Vérifier permissions | Contrôler dossier uploads |
 
 ---
 
@@ -665,6 +744,7 @@ git push origin feature/nouvelle-fonctionnalite
 - 🗄️ Prisma - ORM moderne pour bases de données
 - 🔐 NextAuth.js - Authentification complète
 - 🗺️ Leaflet - Cartes interactives open-source
+- 💳 Stripe - Paiements sécurisés
 
 ---
 

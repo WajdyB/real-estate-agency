@@ -14,6 +14,9 @@ This document provides a comprehensive overview of all frontend pages implemente
 - **Notifications**: React Hot Toast
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
+- **Maps**: Leaflet with OpenStreetMap
+- **Payments**: Stripe integration
+- **File Upload**: Custom upload system with validation
 
 ## User Roles
 
@@ -27,7 +30,9 @@ The application supports three distinct user roles with different access levels:
 - Write reviews
 - Make payments
 - Manage personal profile
-- Create property alerts
+- View property alerts
+- Contact agents
+- Save search preferences
 
 ### 2. **AGENT** (Real Estate Agent)
 - All CLIENT permissions
@@ -36,6 +41,9 @@ The application supports three distinct user roles with different access levels:
 - Access basic analytics
 - Upload property images
 - Manage property listings
+- Handle client messages
+- Process payments
+- Manage blog content
 
 ### 3. **ADMIN** (Administrator)
 - All AGENT permissions
@@ -45,6 +53,9 @@ The application supports three distinct user roles with different access levels:
 - Moderate reviews
 - Manage blog content
 - View notifications
+- Manage payments and refunds
+- Configure application settings
+- Access detailed reports
 
 ## Public Pages (Accessible to All Users)
 
