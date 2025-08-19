@@ -56,7 +56,7 @@ export default function AboutPage() {
       name: 'Marie Dubois',
       role: 'Fondatrice & Directrice',
       experience: '20 ans d\'expérience',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300',
+      image: '/images/placeholders/avatar-1.svg',
       bio: 'Diplômée en droit immobilier, Marie a fondé l\'agence avec la vision de révolutionner l\'expérience immobilière.',
       specialities: ['Direction', 'Stratégie', 'Développement'],
     },
@@ -64,7 +64,7 @@ export default function AboutPage() {
       name: 'Jean Martin',
       role: 'Directeur Commercial',
       experience: '15 ans d\'expérience',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300',
+      image: '/images/placeholders/avatar-2.svg',
       bio: 'Expert en négociation immobilière, Jean accompagne nos clients dans leurs projets les plus ambitieux.',
       specialities: ['Vente', 'Négociation', 'Luxe'],
     },
@@ -72,7 +72,7 @@ export default function AboutPage() {
       name: 'Sophie Laurent',
       role: 'Responsable Investissement',
       experience: '12 ans d\'expérience',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300',
+      image: '/images/placeholders/avatar-3.svg',
       bio: 'Spécialiste de l\'investissement locatif, Sophie optimise la rentabilité de vos projets.',
       specialities: ['Investissement', 'Rentabilité', 'Fiscalité'],
     },
@@ -80,7 +80,7 @@ export default function AboutPage() {
       name: 'Thomas Bernard',
       role: 'Conseiller Senior',
       experience: '10 ans d\'expérience',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300',
+      image: '/images/placeholders/avatar-1.svg',
       bio: 'Passionné par l\'immobilier parisien, Thomas connaît chaque quartier sur le bout des doigts.',
       specialities: ['Achat', 'Paris', 'Primo-accédants'],
     },
@@ -134,7 +134,7 @@ export default function AboutPage() {
       <section className="relative py-20 bg-gradient-to-r from-primary-600 to-primary-800 text-white overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920"
+            src="/images/placeholders/property-1.svg"
             alt="À propos"
             fill
             className="object-cover opacity-20"
@@ -205,7 +205,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="aspect-[4/3] relative rounded-2xl overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800"
+                  src="/images/placeholders/property-2.svg"
                   alt="Notre bureau"
                   fill
                   className="object-cover"

@@ -86,7 +86,7 @@ export default function EstimationPage() {
       await new Promise(resolve => setTimeout(resolve, 2000))
       
       // Calcul basique d'estimation (à améliorer en production)
-      const basePrice = parseInt(formData.surface) * 8500 // Prix moyen au m² Paris
+      const basePrice = parseInt(formData.surface) * 4500 // Prix moyen au m² Tunis
       const typeMultiplier = formData.propertyType === 'APARTMENT' ? 1 : 1.2
       const conditionMultiplier = formData.condition === 'excellent' ? 1.1 : 
                                   formData.condition === 'good' ? 1 : 0.9
@@ -151,18 +151,18 @@ export default function EstimationPage() {
                 <div className="text-4xl font-bold text-primary-600 mb-2">
                   {new Intl.NumberFormat('fr-FR', {
                     style: 'currency',
-                    currency: 'EUR',
+                    currency: 'TND',
                     minimumFractionDigits: 0,
                   }).format(estimationResult)}
                 </div>
                 <p className="text-sm text-gray-500">
                   Fourchette : {new Intl.NumberFormat('fr-FR', {
                     style: 'currency',
-                    currency: 'EUR',
+                    currency: 'TND',
                     minimumFractionDigits: 0,
                   }).format(estimationResult * 0.9)} - {new Intl.NumberFormat('fr-FR', {
                     style: 'currency',
-                    currency: 'EUR',
+                    currency: 'TND',
                     minimumFractionDigits: 0,
                   }).format(estimationResult * 1.1)}
                 </p>
@@ -348,7 +348,7 @@ export default function EstimationPage() {
                           name="city"
                           value={formData.city}
                           onChange={handleChange}
-                          placeholder="Paris"
+                          placeholder="Tunis"
                           required
                         />
                       </div>
@@ -362,7 +362,7 @@ export default function EstimationPage() {
                         name="zipCode"
                         value={formData.zipCode}
                         onChange={handleChange}
-                        placeholder="75001"
+                        placeholder="1001"
                         required
                         className="max-w-xs"
                       />

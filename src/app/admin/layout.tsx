@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
@@ -86,6 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [userAvatar, setUserAvatar] = useState<string | null>(null)
 
   // Hide header and footer from main layout
   React.useEffect(() => {
@@ -115,6 +117,45 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return
     }
   }, [session, status, router])
+
+  // Fetch user avatar function
+  const fetchUserAvatar = async () => {
+    if (!session?.user) {
+      setUserAvatar(null)
+      return
+    }
+
+    try {
+      const response = await fetch('/api/users/profile')
+      const data = await response.json()
+      
+      if (data.success && data.data.image) {
+        setUserAvatar(data.data.image)
+      } else {
+        setUserAvatar(null)
+      }
+    } catch (error) {
+      console.error('Error fetching user avatar:', error)
+      setUserAvatar(null)
+    }
+  }
+
+  // Fetch user avatar when session is available
+  useEffect(() => {
+    if (session) {
+      fetchUserAvatar()
+    }
+  }, [session])
+
+  // Listen for avatar updates via custom event
+  useEffect(() => {
+    const handleAvatarUpdate = () => {
+      fetchUserAvatar()
+    }
+
+    window.addEventListener('avatarUpdated', handleAvatarUpdate)
+    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate)
+  }, [session])
 
   if (status === 'loading') {
     return (
@@ -225,10 +266,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* User Profile */}
         <div className="border-t px-4 py-4">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-medium">
-                {session.user.name?.charAt(0) || 'U'}
-              </span>
+            <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-gray-200">
+              {userAvatar ? (
+                <Image
+                  src={userAvatar}
+                  alt={session.user.name || 'Avatar'}
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-medium">
+                    {session.user.name?.charAt(0) || 'U'}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">

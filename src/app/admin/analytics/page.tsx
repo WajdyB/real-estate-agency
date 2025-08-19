@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { 
   BarChart3, 
   TrendingUp, 
@@ -13,27 +13,209 @@ import {
   Calendar,
   DollarSign,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Download,
+  Filter,
+  Loader2,
+  RefreshCw
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { formatPrice, formatDate } from '@/lib/utils'
+
+// Types for analytics data
+interface AnalyticsData {
+  overview: {
+    totalProperties: number
+    publishedProperties: number
+    soldProperties: number
+    averagePrice: number
+    totalViews: number
+    totalUsers: number
+    newUsers: number
+    activeUsers: number
+    totalRevenue: number
+    completedPayments: number
+    pendingPayments: number
+    totalFavorites: number
+    totalAppointments: number
+    totalReviews: number
+  }
+  trends: {
+    monthly: Array<{
+      month: string
+      properties: number
+      users: number
+      revenue: number
+      views: number
+    }>
+  }
+  topProperties: Array<{
+    id: string
+    title: string
+    price: number
+    views: number
+    city: string
+    _count: {
+      favorites: number
+      reviews: number
+    }
+  }>
+  propertyTypes: Array<{
+    type: string
+    count: number
+  }>
+  propertyCities: Array<{
+    city: string
+    count: number
+    totalValue: number
+  }>
+  recentActivity: {
+    properties: Array<{
+      id: string
+      title: string
+      price: number
+      createdAt: string
+      agent: {
+        name: string
+      }
+    }>
+    users: Array<{
+      id: string
+      name: string
+      email: string
+      createdAt: string
+      role: string
+    }>
+    payments: Array<{
+      id: string
+      amount: number
+      createdAt: string
+      user: {
+        name: string
+      }
+      property: {
+        title: string
+      }
+    }>
+    reviews: Array<{
+      id: string
+      rating: number
+      comment: string
+      createdAt: string
+      user: {
+        name: string
+      }
+      property: {
+        title: string
+      }
+    }>
+  }
+}
 
 export default function AnalyticsPage() {
-  const [selectedPeriod, setSelectedPeriod] = useState('month')
+  const [selectedPeriod, setSelectedPeriod] = useState('30')
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
 
-  // Mock data - replace with real data from your API
+  // Fetch analytics data
+  const fetchAnalytics = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const response = await fetch(`/api/analytics?period=${selectedPeriod}`)
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to fetch analytics')
+      }
+
+      setAnalyticsData(data.data)
+    } catch (err) {
+      console.error('Error fetching analytics:', err)
+      setError(err instanceof Error ? err.message : 'Failed to fetch analytics')
+    } finally {
+      setLoading(false)
+    }
+  }, [selectedPeriod])
+
+  // Refresh data
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    await fetchAnalytics()
+    setRefreshing(false)
+  }
+
+  // Generate report
+  const handleGenerateReport = async (type: string) => {
+    try {
+      const response = await fetch(`/api/analytics/reports?type=${type}&period=${selectedPeriod}`)
+      const data = await response.json()
+
+      if (data.success) {
+        // In a real app, you might download this as a file
+        console.log(`${type} report:`, data.data)
+        alert(`${type} report generated successfully!`)
+      }
+    } catch (err) {
+      console.error('Error generating report:', err)
+      alert('Failed to generate report')
+    }
+  }
+
+  // Fetch data on mount and when period changes
+  useEffect(() => {
+    fetchAnalytics()
+  }, [fetchAnalytics])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-16">
+        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <TrendingDown className="w-12 h-12 text-red-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Erreur de chargement</h3>
+        <p className="text-gray-600 mb-6">{error}</p>
+        <Button onClick={fetchAnalytics}>Réessayer</Button>
+      </div>
+    )
+  }
+
+  if (!analyticsData) {
+    return null
+  }
+
+  const { overview, trends, topProperties, propertyTypes, propertyCities, recentActivity } = analyticsData
+
+  // Calculate percentage changes (mock for now)
+  const getChangePercentage = (current: number, previous: number) => {
+    if (previous === 0) return current > 0 ? 100 : 0
+    return ((current - previous) / previous) * 100
+  }
+
   const stats = [
     {
       title: 'Vues totales',
-      value: '24,847',
+      value: overview.totalViews.toLocaleString(),
       change: '+12.5%',
       changeType: 'positive',
       icon: Eye,
       color: 'bg-blue-100 text-blue-600'
     },
     {
-      title: 'Propriétés vues',
-      value: '1,234',
+      title: 'Propriétés publiées',
+      value: overview.publishedProperties.toLocaleString(),
       change: '+8.2%',
       changeType: 'positive',
       icon: Home,
@@ -41,85 +223,19 @@ export default function AnalyticsPage() {
     },
     {
       title: 'Favoris ajoutés',
-      value: '567',
+      value: overview.totalFavorites.toLocaleString(),
       change: '+15.3%',
       changeType: 'positive',
       icon: Heart,
       color: 'bg-red-100 text-red-600'
     },
     {
-      title: 'Messages reçus',
-      value: '89',
+      title: 'Revenus totaux',
+      value: formatPrice(overview.totalRevenue),
       change: '+5.7%',
       changeType: 'positive',
-      icon: MessageSquare,
+      icon: DollarSign,
       color: 'bg-purple-100 text-purple-600'
-    }
-  ]
-
-  const topProperties = [
-    {
-      id: 1,
-      title: 'Appartement 3 pièces - Paris 15ème',
-      views: 1247,
-      favorites: 89,
-      inquiries: 23,
-      price: '€485,000'
-    },
-    {
-      id: 2,
-      title: 'Villa avec piscine - Nice',
-      views: 892,
-      favorites: 67,
-      inquiries: 18,
-      price: '€1,250,000'
-    },
-    {
-      id: 3,
-      title: 'Studio moderne - Lyon',
-      views: 756,
-      favorites: 45,
-      inquiries: 12,
-      price: '€295,000'
-    },
-    {
-      id: 4,
-      title: 'Maison familiale - Bordeaux',
-      views: 634,
-      favorites: 38,
-      inquiries: 9,
-      price: '€650,000'
-    }
-  ]
-
-  const recentActivity = [
-    {
-      id: 1,
-      action: 'Nouvelle propriété ajoutée',
-      description: 'Appartement 4 pièces à Marseille',
-      time: 'Il y a 2 heures',
-      type: 'property'
-    },
-    {
-      id: 2,
-      action: 'Demande de visite',
-      description: 'Villa à Cannes - Client très intéressé',
-      time: 'Il y a 4 heures',
-      type: 'inquiry'
-    },
-    {
-      id: 3,
-      action: 'Paiement reçu',
-      description: '€2,500 pour location mensuelle',
-      time: 'Il y a 6 heures',
-      type: 'payment'
-    },
-    {
-      id: 4,
-      action: 'Nouveau client inscrit',
-      description: 'Marie Dubois - Recherche appartement Paris',
-      time: 'Il y a 8 heures',
-      type: 'user'
     }
   ]
 
@@ -147,13 +263,21 @@ export default function AnalyticsPage() {
             onChange={(e) => setSelectedPeriod(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="week">Cette semaine</option>
-            <option value="month">Ce mois</option>
-            <option value="quarter">Ce trimestre</option>
-            <option value="year">Cette année</option>
+            <option value="7">7 derniers jours</option>
+            <option value="30">30 derniers jours</option>
+            <option value="90">3 derniers mois</option>
+            <option value="365">Cette année</option>
           </select>
-          <Button variant="outline">
-            <Calendar className="w-4 h-4 mr-2" />
+          <Button 
+            variant="outline" 
+            onClick={handleRefresh}
+            disabled={refreshing}
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            Actualiser
+          </Button>
+          <Button variant="outline" onClick={() => handleGenerateReport('overview')}>
+            <Download className="w-4 h-4 mr-2" />
             Exporter
           </Button>
         </div>
@@ -183,43 +307,89 @@ export default function AnalyticsPage() {
         ))}
       </div>
 
-      {/* Charts section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Traffic overview */}
+      {/* Detailed metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Aperçu du trafic</h3>
-            <Button variant="outline" size="sm">
-              Voir plus
-            </Button>
-          </div>
-          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Graphique du trafic</p>
-              <p className="text-sm text-gray-500">
-                Intégration avec une bibliothèque de graphiques recommandée
-              </p>
-            </div>
+          <div className="text-center">
+            <Users className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+            <h4 className="text-lg font-semibold text-gray-900 mb-2">Utilisateurs</h4>
+            <p className="text-3xl font-bold text-blue-600">{overview.totalUsers}</p>
+            <p className="text-sm text-gray-600 mt-2">
+              {overview.newUsers} nouveaux ({selectedPeriod}j)
+            </p>
           </div>
         </Card>
 
-        {/* Property performance */}
+        <Card className="p-6">
+          <div className="text-center">
+            <Home className="w-12 h-12 text-green-600 mx-auto mb-4" />
+            <h4 className="text-lg font-semibold text-gray-900 mb-2">Propriétés</h4>
+            <p className="text-3xl font-bold text-green-600">{overview.totalProperties}</p>
+            <p className="text-sm text-gray-600 mt-2">
+              {overview.soldProperties} vendues
+            </p>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="text-center">
+            <DollarSign className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+            <h4 className="text-lg font-semibold text-gray-900 mb-2">Paiements</h4>
+            <p className="text-3xl font-bold text-purple-600">{overview.completedPayments}</p>
+            <p className="text-sm text-gray-600 mt-2">
+              {overview.pendingPayments} en attente
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      {/* Charts section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Monthly trends */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Performance des propriétés</h3>
-            <Button variant="outline" size="sm">
-              Voir plus
+            <h3 className="text-lg font-semibold text-gray-900">Tendances mensuelles</h3>
+            <Button variant="outline" size="sm" onClick={() => handleGenerateReport('performance')}>
+              Rapport
             </Button>
           </div>
-          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Graphique des performances</p>
-              <p className="text-sm text-gray-500">
-                Intégration avec une bibliothèque de graphiques recommandée
-              </p>
-            </div>
+          <div className="space-y-4">
+            {trends.monthly.slice(-6).map((month, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <span className="text-sm font-medium text-gray-900">{month.month}</span>
+                <div className="flex items-center space-x-4 text-sm">
+                  <span className="text-blue-600">{month.properties} propriétés</span>
+                  <span className="text-green-600">{month.users} utilisateurs</span>
+                  <span className="text-purple-600">{formatPrice(month.revenue)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Property distribution */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">Distribution par type</h3>
+            <Button variant="outline" size="sm" onClick={() => handleGenerateReport('properties')}>
+              Rapport
+            </Button>
+          </div>
+          <div className="space-y-3">
+            {propertyTypes.map((type) => (
+              <div key={type.type} className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-900">{type.type}</span>
+                <div className="flex items-center space-x-2">
+                  <div className="w-24 bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full" 
+                      style={{ width: `${(type.count / overview.totalProperties) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-sm text-gray-600 w-8">{type.count}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
@@ -240,13 +410,16 @@ export default function AnalyticsPage() {
                   Propriété
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ville
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Vues
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Favoris
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Demandes
+                  Avis
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Prix
@@ -260,16 +433,19 @@ export default function AnalyticsPage() {
                     <div className="text-sm font-medium text-gray-900">{property.title}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{property.city}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{property.views.toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{property.favorites}</div>
+                    <div className="text-sm text-gray-900">{property._count.favorites}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{property.inquiries}</div>
+                    <div className="text-sm text-gray-900">{property._count.reviews}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{property.price}</div>
+                    <div className="text-sm font-medium text-gray-900">{formatPrice(property.price)}</div>
                   </td>
                 </tr>
               ))}
@@ -287,52 +463,31 @@ export default function AnalyticsPage() {
           </Button>
         </div>
         <div className="space-y-4">
-          {recentActivity.map((activity) => (
-            <div key={activity.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50">
-              <div className={`w-2 h-2 rounded-full ${
-                activity.type === 'property' ? 'bg-blue-500' :
-                activity.type === 'inquiry' ? 'bg-green-500' :
-                activity.type === 'payment' ? 'bg-purple-500' : 'bg-orange-500'
-              }`} />
+          {/* Recent properties */}
+          {recentActivity.properties.slice(0, 3).map((property) => (
+            <div key={property.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50">
+              <div className="w-2 h-2 rounded-full bg-blue-500" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{activity.action}</p>
-                <p className="text-sm text-gray-600">{activity.description}</p>
+                <p className="text-sm font-medium text-gray-900">Nouvelle propriété ajoutée</p>
+                <p className="text-sm text-gray-600">{property.title} - {formatPrice(property.price)}</p>
               </div>
-              <span className="text-xs text-gray-500">{activity.time}</span>
+              <span className="text-xs text-gray-500">{formatDate(property.createdAt)}</span>
+            </div>
+          ))}
+          
+          {/* Recent payments */}
+          {recentActivity.payments.slice(0, 2).map((payment) => (
+            <div key={payment.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50">
+              <div className="w-2 h-2 rounded-full bg-purple-500" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">Paiement reçu</p>
+                <p className="text-sm text-gray-600">{formatPrice(payment.amount)} - {payment.property.title}</p>
+              </div>
+              <span className="text-xs text-gray-500">{formatDate(payment.createdAt)}</span>
             </div>
           ))}
         </div>
       </Card>
-
-      {/* Additional insights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6">
-          <div className="text-center">
-            <Users className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <h4 className="text-lg font-semibold text-gray-900 mb-2">Nouveaux utilisateurs</h4>
-            <p className="text-3xl font-bold text-blue-600">+156</p>
-            <p className="text-sm text-gray-600 mt-2">Ce mois</p>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="text-center">
-            <Home className="w-12 h-12 text-green-600 mx-auto mb-4" />
-            <h4 className="text-lg font-semibold text-gray-900 mb-2">Propriétés ajoutées</h4>
-            <p className="text-3xl font-bold text-green-600">+24</p>
-            <p className="text-sm text-gray-600 mt-2">Ce mois</p>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="text-center">
-            <DollarSign className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-            <h4 className="text-lg font-semibold text-gray-900 mb-2">Revenus générés</h4>
-            <p className="text-3xl font-bold text-purple-600">€12,450</p>
-            <p className="text-sm text-gray-600 mt-2">Ce mois</p>
-          </div>
-        </Card>
-      </div>
     </div>
   )
 }

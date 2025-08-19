@@ -6,9 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(price: number): string {
-  return new Intl.NumberFormat('fr-FR', {
+  return new Intl.NumberFormat('fr-TN', {
     style: 'currency',
-    currency: 'EUR',
+    currency: 'TND',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(price)
@@ -45,7 +45,7 @@ export function getInitials(name: string): string {
 
 export function formatDate(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date
-  return new Intl.DateTimeFormat('fr-FR', {
+  return new Intl.DateTimeFormat('fr-TN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/Card'
@@ -17,159 +17,101 @@ import {
   Facebook,
   Twitter,
   Linkedin,
-  Mail
+  Mail,
+  Loader2
 } from 'lucide-react'
 
-// Mock data - en production, ces données viendraient de l'API
-const mockBlogPost = {
-  id: '1',
-  title: 'Guide complet pour acheter son premier appartement en 2024',
-  slug: 'guide-premier-achat-appartement-2024',
-  excerpt: 'Découvrez tous nos conseils d\'experts pour réussir votre premier achat immobilier sans stress. De la recherche au financement, nous vous accompagnons.',
-  content: `
-    <h2>Introduction</h2>
-    <p>Acheter son premier appartement est une étape importante de la vie. C'est souvent l'investissement le plus important que vous ferez, et il est normal de se sentir un peu dépassé par toutes les démarches à effectuer.</p>
-    
-    <p>Dans ce guide complet, nous vous accompagnons pas à pas dans votre projet d'achat immobilier, de la définition de votre budget jusqu'à la remise des clés.</p>
-
-    <h2>1. Définir votre budget</h2>
-    <p>Avant de commencer vos recherches, il est essentiel de définir précisément votre budget. Celui-ci doit tenir compte de plusieurs éléments :</p>
-    
-    <ul>
-      <li><strong>Votre apport personnel</strong> : généralement 10% du prix d'achat minimum</li>
-      <li><strong>Votre capacité d'emprunt</strong> : calculée selon vos revenus et charges</li>
-      <li><strong>Les frais annexes</strong> : notaire, garantie, assurance (environ 8% du prix)</li>
-      <li><strong>Les travaux éventuels</strong> : prévoyez une réserve pour les imprévus</li>
-    </ul>
-
-    <h2>2. Obtenir un accord de principe</h2>
-    <p>Une fois votre budget défini, rendez-vous chez votre banquier ou courtier pour obtenir un accord de principe. Ce document vous permettra de :</p>
-    
-    <ul>
-      <li>Crédibiliser vos offres d'achat</li>
-      <li>Négocier plus efficacement</li>
-      <li>Accélérer le processus d'achat</li>
-    </ul>
-
-    <h2>3. Définir vos critères de recherche</h2>
-    <p>Listez vos critères essentiels et secondaires :</p>
-    
-    <h3>Critères essentiels :</h3>
-    <ul>
-      <li>Localisation (proximité travail, transports, écoles)</li>
-      <li>Surface minimale</li>
-      <li>Nombre de pièces</li>
-      <li>Étage (avec ou sans ascenseur)</li>
-    </ul>
-
-    <h3>Critères secondaires :</h3>
-    <ul>
-      <li>Balcon ou terrasse</li>
-      <li>Parking</li>
-      <li>Cave ou cellier</li>
-      <li>Exposition</li>
-    </ul>
-
-    <h2>4. La recherche active</h2>
-    <p>Multipliez les canaux de recherche :</p>
-    
-    <ul>
-      <li><strong>Agences immobilières</strong> : expertise locale et accompagnement personnalisé</li>
-      <li><strong>Portails en ligne</strong> : large choix et mise à jour régulière</li>
-      <li><strong>Notaires</strong> : ventes de succession parfois intéressantes</li>
-      <li><strong>Bouche-à-oreille</strong> : n'hésitez pas à faire savoir que vous cherchez</li>
-    </ul>
-
-    <h2>5. Les visites</h2>
-    <p>Lors des visites, soyez méthodique :</p>
-    
-    <ul>
-      <li>Visitez à différents moments de la journée si possible</li>
-      <li>Vérifiez l'état général (plomberie, électricité, isolation)</li>
-      <li>Renseignez-vous sur les charges de copropriété</li>
-      <li>Demandez le règlement de copropriété et les PV d'AG</li>
-    </ul>
-
-    <h2>6. Faire une offre</h2>
-    <p>Une fois le bien trouvé :</p>
-    
-    <ul>
-      <li>Étudiez les prix du marché local</li>
-      <li>N'hésitez pas à négocier (5 à 10% en général)</li>
-      <li>Formalisez votre offre par écrit</li>
-      <li>Prévoyez des conditions suspensives</li>
-    </ul>
-
-    <h2>7. Le compromis de vente</h2>
-    <p>Une fois votre offre acceptée, vous signerez un compromis de vente qui fixe :</p>
-    
-    <ul>
-      <li>Le prix définitif</li>
-      <li>Les conditions suspensives</li>
-      <li>La date de signature chez le notaire</li>
-      <li>Le montant du dépôt de garantie (5 à 10%)</li>
-    </ul>
-
-    <h2>8. Finaliser le financement</h2>
-    <p>Vous avez généralement 45 jours pour :</p>
-    
-    <ul>
-      <li>Finaliser votre dossier de prêt</li>
-      <li>Souscrire l'assurance emprunteur</li>
-      <li>Obtenir l'offre de prêt définitive</li>
-    </ul>
-
-    <h2>Conclusion</h2>
-    <p>Acheter son premier appartement demande du temps et de la préparation, mais c'est un projet passionnant qui vous permettra de devenir propriétaire et de constituer un patrimoine.</p>
-    
-    <p>N'hésitez pas à vous faire accompagner par des professionnels : agent immobilier, courtier, notaire. Leur expertise vous fera gagner du temps et vous évitera des erreurs coûteuses.</p>
-
-    <p><strong>Notre équipe d'experts reste à votre disposition pour vous accompagner dans votre projet d'achat immobilier.</strong></p>
-  `,
-  image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200',
-  author: 'Sophie Martin',
-      authorImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-  authorBio: 'Experte en immobilier depuis plus de 10 ans, Sophie accompagne les primo-accédants dans leur projet d\'achat.',
-  category: 'Conseils Achat',
-  readingTime: '8 min',
-  isPublished: true,
-  views: 1250,
-  createdAt: '2024-01-15T10:00:00Z',
-  updatedAt: '2024-01-15T10:00:00Z',
+// Types for blog post
+interface BlogPost {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  content: string
+  image?: string
+  isPublished: boolean
+  views: number
+  createdAt: string
+  updatedAt: string
 }
 
-const relatedPosts = [
-  {
-    id: '2',
-    title: 'Comment négocier le prix d\'un appartement ?',
-    slug: 'negocier-prix-appartement',
-    image: 'https://images.unsplash.com/photo-1554469384-e58fac16e23a?w=400',
-    category: 'Conseils Achat',
-    createdAt: '2024-01-10T14:30:00Z',
-  },
-  {
-    id: '3',
-    title: 'Les erreurs à éviter lors d\'un premier achat',
-    slug: 'erreurs-eviter-premier-achat',
-    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400',
-    category: 'Conseils',
-    createdAt: '2024-01-08T09:15:00Z',
-  },
-  {
-    id: '4',
-    title: 'Financement immobilier : tout savoir sur les prêts',
-    slug: 'financement-immobilier-prets',
-    image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400',
-    category: 'Financement',
-    createdAt: '2024-01-05T16:45:00Z',
-  },
-]
+interface BlogResponse {
+  success: boolean
+  data: BlogPost
+}
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = mockBlogPost // En production, fetch basé sur params.slug
+  const [post, setPost] = useState<BlogPost | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/blog/${post.slug}`
+  // Fetch blog post
+  const fetchPost = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const response = await fetch(`/api/blog/${params.slug}`)
+      const data: BlogResponse = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to fetch blog post')
+      }
+
+      setPost(data.data)
+    } catch (err) {
+      console.error('Error fetching blog post:', err)
+      setError(err instanceof Error ? err.message : 'Failed to fetch blog post')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Fetch post on component mount
+  useEffect(() => {
+    fetchPost()
+  }, [params.slug])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary-600" />
+          <p className="text-gray-600">Chargement de l'article...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !post) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Eye className="w-12 h-12 text-red-500" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Article non trouvé
+          </h3>
+          <p className="text-gray-600 mb-6">
+            {error || "L'article que vous recherchez n'existe pas ou a été supprimé."}
+          </p>
+          <Link href="/blog">
+            <Button>
+              Retour au blog
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/blog/${post.slug}`
   const shareTitle = encodeURIComponent(post.title)
+
+  // Calculate reading time (rough estimate: 200 words per minute)
+  const wordCount = post.content.split(' ').length
+  const readingTime = Math.ceil(wordCount / 200)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -187,7 +129,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       <section className="relative">
         <div className="aspect-[21/9] relative">
           <Image
-            src={post.image}
+            src={post.image || '/images/placeholders/blog-1.svg'}
             alt={post.title}
             fill
             className="object-cover"
@@ -200,7 +142,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             <div className="container">
               <div className="max-w-4xl">
                 <Badge variant="gold" className="mb-4">
-                  {post.category}
+                  Immobilier
                 </Badge>
                 <h1 className="text-4xl lg:text-5xl font-display font-bold text-white mb-4">
                   {post.title}
@@ -208,7 +150,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 <div className="flex flex-wrap items-center gap-6 text-white/90">
                   <div className="flex items-center">
                     <User className="w-4 h-4 mr-2" />
-                    {post.author}
+                    Agence Premium
                   </div>
                   <div className="flex items-center">
                     <Calendar className="w-4 h-4 mr-2" />
@@ -216,7 +158,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                   </div>
                   <div className="flex items-center">
                     <Clock className="w-4 h-4 mr-2" />
-                    {post.readingTime} de lecture
+                    {readingTime} min de lecture
                   </div>
                   <div className="flex items-center">
                     <Eye className="w-4 h-4 mr-2" />
@@ -246,6 +188,24 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                   className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-display prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-gray-900 prose-ul:text-gray-700 prose-li:text-gray-700"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
+
+                {/* Tags */}
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Tags
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-sm">
+                      Immobilier
+                    </Badge>
+                    <Badge variant="outline" className="text-sm">
+                      Conseils
+                    </Badge>
+                    <Badge variant="outline" className="text-sm">
+                      Marché
+                    </Badge>
+                  </div>
+                </div>
 
                 {/* Share Buttons */}
                 <div className="mt-12 pt-8 border-t border-gray-200">
@@ -291,18 +251,18 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                       <Image
-                        src={post.authorImage}
-                        alt={post.author}
+                        src="/images/placeholders/avatar-1.svg"
+                        alt="Agence Premium"
                         width={80}
                         height={80}
                         className="rounded-full"
                       />
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                          À propos de {post.author}
+                          À propos de l'Agence Premium
                         </h3>
                         <p className="text-gray-600 leading-relaxed">
-                          {post.authorBio}
+                          Expert en immobilier avec une expertise approfondie dans le domaine.
                         </p>
                       </div>
                     </div>
@@ -319,53 +279,47 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                   <h3 className="font-semibold text-gray-900 mb-4">
                     Partager
                   </h3>
-                  <Button variant="outline" size="sm" className="w-full mb-3">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mb-3"
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({
+                          title: post.title,
+                          text: post.excerpt,
+                          url: shareUrl,
+                        })
+                      } else {
+                        navigator.clipboard.writeText(shareUrl)
+                        // You could add a toast notification here
+                      }
+                    }}
+                  >
                     <Share2 className="w-4 h-4 mr-2" />
                     Partager l'article
                   </Button>
                   <div className="text-sm text-gray-600 text-center">
-                    {post.views} vues • {post.readingTime}
+                    {post.views} vues • {readingTime} min
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Related Articles */}
+              {/* Article Info */}
               <Card>
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-gray-900 mb-4">
-                    Articles similaires
+                    Informations
                   </h3>
-                  <div className="space-y-4">
-                    {relatedPosts.map((relatedPost) => (
-                      <Link
-                        key={relatedPost.id}
-                        href={`/blog/${relatedPost.slug}`}
-                        className="block group"
-                      >
-                        <div className="flex space-x-3">
-                          <div className="relative w-20 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                            <Image
-                              src={relatedPost.image}
-                              alt={relatedPost.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform"
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-gray-900 text-sm line-clamp-2 group-hover:text-primary-600 transition-colors">
-                              {relatedPost.title}
-                            </h4>
-                            <div className="flex items-center mt-1 text-xs text-gray-500">
-                              <Badge variant="outline" className="text-xs mr-2">
-                                {relatedPost.category}
-                              </Badge>
-                              <Calendar className="w-3 h-3 mr-1" />
-                              {formatDate(relatedPost.createdAt)}
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Publié le:</span>
+                      <span className="text-gray-900">{formatDate(post.createdAt)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Vues:</span>
+                      <span className="text-gray-900">{post.views}</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

@@ -1,0 +1,14 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#dbeafe"/>
+  <rect x="200" y="200" width="400" height="300" fill="#bfdbfe" stroke="#3b82f6" stroke-width="2"/>
+  <rect x="220" y="220" width="90" height="130" fill="#93c5fd"/>
+  <rect x="330" y="220" width="90" height="130" fill="#93c5fd"/>
+  <rect x="440" y="220" width="90" height="130" fill="#93c5fd"/>
+  <rect x="550" y="220" width="30" height="130" fill="#93c5fd"/>
+  <rect x="220" y="370" width="90" height="110" fill="#93c5fd"/>
+  <rect x="330" y="370" width="90" height="110" fill="#93c5fd"/>
+  <rect x="440" y="370" width="90" height="110" fill="#93c5fd"/>
+  <rect x="550" y="370" width="30" height="110" fill="#93c5fd"/>
+  <rect x="280" y="120" width="240" height="60" fill="#2563eb"/>
+  <text x="400" y="155" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">HOUSE</text>
+</svg>

@@ -22,9 +22,9 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-400 leading-relaxed">
-              Votre partenaire immobilier de confiance depuis plus de 20 ans. 
+              Votre partenaire immobilier de confiance en Tunisie depuis plus de 20 ans. 
               Nous vous accompagnons dans tous vos projets immobiliers avec 
-              expertise et professionnalisme.
+              expertise et professionnalisme à travers tout le territoire tunisien.
             </p>
             <div className="flex space-x-4">
               <a
@@ -126,27 +126,27 @@ export default function Footer() {
                 <MapPin className="w-5 h-5 text-primary-400 mt-1 flex-shrink-0" />
                 <div>
                   <p className="text-gray-400">
-                    123 Avenue des Champs-Élysées<br />
-                    75008 Paris, France
+                    Avenue Habib Bourguiba, Centre Ville<br />
+                    1001 Tunis, Tunisie
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-primary-400 flex-shrink-0" />
                 <a
-                  href="tel:+33123456789"
+                  href="tel:+21671234567"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  +33 1 23 45 67 89
+                  +216 71 234 567
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-primary-400 flex-shrink-0" />
                 <a
-                  href="mailto:contact@agence-premium.fr"
+                  href="mailto:contact@agence-premium.tn"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  contact@agence-premium.fr
+                  contact@agence.tn
                 </a>
               </div>
             </div>

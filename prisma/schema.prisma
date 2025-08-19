@@ -19,6 +19,7 @@ model User {
   phone         String?
   role          Role      @default(CLIENT)
   emailVerified DateTime?
+  isActive      Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -27,7 +28,6 @@ model User {
   sessions      Session[]
   properties    Property[]
   favorites     Favorite[]
-  alerts        Alert[]
   payments      Payment[]
   messages      Message[]
   appointments  Appointment[]
@@ -93,7 +93,7 @@ model Property {
   address         String
   city            String
   zipCode         String
-  country         String        @default("France")
+  country         String        @default("Tunisia")
   latitude        Float?
   longitude       Float?
   features        Json?
@@ -115,6 +115,7 @@ model Property {
   payments        Payment[]
   appointments    Appointment[]
   reviews         Review[]
+  messages        Message[]
 
   @@map("properties")
 }
@@ -132,29 +133,7 @@ model Favorite {
   @@map("favorites")
 }
 
-model Alert {
-  id          String      @id @default(cuid())
-  userId      String
-  name        String
-  type        PropertyType?
-  minPrice    Decimal?    @db.Decimal(10, 2)
-  maxPrice    Decimal?    @db.Decimal(10, 2)
-  minSurface  Int?
-  maxSurface  Int?
-  rooms       Int?
-  bedrooms    Int?
-  city        String?
-  zipCode     String?
-  isActive    Boolean     @default(true)
-  frequency   AlertFrequency @default(DAILY)
-  lastSent    DateTime?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("alerts")
-}
 
 model Payment {
   id              String        @id @default(cuid())
@@ -162,7 +141,7 @@ model Payment {
   propertyId      String
   stripePaymentId String        @unique
   amount          Decimal       @db.Decimal(10, 2)
-  currency        String        @default("EUR")
+  currency        String        @default("TND")
   status          PaymentStatus
   type            PaymentType
   description     String?
@@ -177,19 +156,25 @@ model Payment {
 }
 
 model Message {
-  id         String        @id @default(cuid())
-  userId     String
-  name       String
-  email      String
-  phone      String?
-  subject    String
-  message    String        @db.Text
-  status     MessageStatus @default(PENDING)
-  response   String?       @db.Text
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  userId       String
+  name         String
+  email        String
+  phone        String?
+  subject      String
+  message      String        @db.Text
+  status       MessageStatus @default(PENDING)
+  response     String?       @db.Text
+  propertyType String?
+  budget       String?
+  timeframe    String?
+  propertyId   String?
+  priority     MessagePriority @default(MEDIUM)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  property Property? @relation(fields: [propertyId], references: [id])
 
   @@map("messages")
 }
@@ -302,6 +287,13 @@ enum MessageStatus {
   CLOSED
 }
 
+enum MessagePriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
 enum AppointmentStatus {
   PENDING
   CONFIRMED
@@ -309,8 +301,4 @@ enum AppointmentStatus {
   CANCELED
 }
 
-enum AlertFrequency {
-  DAILY
-  WEEKLY
-  MONTHLY
-}
+

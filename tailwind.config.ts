@@ -53,7 +53,7 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        accent: {
+        purple: {
           50: '#fdf4ff',
           100: '#fae8ff',
           200: '#f5d0fe',

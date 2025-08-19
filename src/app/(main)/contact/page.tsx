@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -29,8 +29,26 @@ export default function ContactPage() {
     propertyType: '',
     budget: '',
     timeframe: '',
+    propertyId: '',
   })
+  const [properties, setProperties] = useState<Array<{id: string, title: string, price: number, city: string}>>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Fetch properties for the selector
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await fetch('/api/properties?limit=20&isPublished=true')
+        const data = await response.json()
+        if (data.success) {
+          setProperties(data.data)
+        }
+      } catch (error) {
+        console.error('Error fetching properties:', error)
+      }
+    }
+    fetchProperties()
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -44,23 +62,46 @@ export default function ContactPage() {
     setIsSubmitting(true)
 
     try {
-      // Simulation d'envoi - en production, remplacer par un appel API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      toast.success('Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.')
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: '',
-        propertyType: '',
-        budget: '',
-        timeframe: '',
+      // Create message via API
+      const response = await fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subject: formData.subject,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          propertyType: formData.propertyType,
+          budget: formData.budget,
+          timeframe: formData.timeframe,
+        }),
       })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success('Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.')
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+          propertyType: '',
+          budget: '',
+          timeframe: '',
+          propertyId: '',
+        })
+      } else {
+        throw new Error(data.error || 'Erreur lors de l\'envoi')
+      }
     } catch (error) {
+      console.error('Error submitting form:', error)
       toast.error('Une erreur est survenue. Veuillez réessayer.')
     } finally {
       setIsSubmitting(false)
@@ -71,13 +112,13 @@ export default function ContactPage() {
     {
       icon: MapPin,
       title: 'Adresse',
-      details: ['123 Avenue des Champs-Élysées', '75008 Paris, France'],
+      details: ['Avenue Habib Bourguiba, Centre Ville', '1001 Tunis, Tunisie'],
       action: 'Voir sur la carte',
     },
     {
       icon: Phone,
       title: 'Téléphone',
-      details: ['+33 1 23 45 67 89', '+33 6 12 34 56 78'],
+      details: ['+216 71 234 567', '+216 98 765 432'],
       action: 'Appeler maintenant',
     },
     {
@@ -98,25 +139,25 @@ export default function ContactPage() {
     {
       name: 'Sophie Martin',
       role: 'Directrice Commerciale',
-      phone: '+33 1 23 45 67 80',
-      email: 'sophie.martin@agence-premium.fr',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      phone: '+216 71 234 580',
+      email: 'sophie.martin@agence-premium.tn',
+      image: '/images/placeholders/avatar-1.svg',
       speciality: 'Achat / Vente',
     },
     {
       name: 'Jean Dubois',
       role: 'Conseiller Senior',
-      phone: '+33 1 23 45 67 81',
-      email: 'jean.dubois@agence-premium.fr',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+      phone: '+216 71 234 581',
+      email: 'jean.dubois@agence-premium.tn',
+      image: '/images/placeholders/avatar-2.svg',
       speciality: 'Investissement',
     },
     {
       name: 'Marie Leroy',
       role: 'Conseillère Immobilier',
-      phone: '+33 1 23 45 67 82',
-      email: 'marie.leroy@agence-premium.fr',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+      phone: '+216 71 234 582',
+      email: 'marie.leroy@agence-premium.tn',
+      image: '/images/placeholders/avatar-3.svg',
       speciality: 'Location',
     },
   ]
@@ -206,7 +247,7 @@ export default function ContactPage() {
                           type="tel"
                           value={formData.phone}
                           onChange={handleChange}
-                          placeholder="+33 1 23 45 67 89"
+                          placeholder="+216 71 234 567"
                         />
                       </div>
                       <div>
@@ -230,6 +271,26 @@ export default function ContactPage() {
                           <option value="autre">Autre</option>
                         </select>
                       </div>
+                    </div>
+
+                    {/* Property Selection */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Propriété d'intérêt (optionnel)
+                      </label>
+                      <select
+                        name="propertyId"
+                        value={formData.propertyId}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      >
+                        <option value="">Sélectionnez une propriété (optionnel)</option>
+                        {properties.map((property) => (
+                          <option key={property.id} value={property.id}>
+                            {property.title} - {property.city} ({property.price.toLocaleString()} TND)
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     {/* Project Details */}
@@ -264,11 +325,11 @@ export default function ContactPage() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         >
                           <option value="">Sélectionnez</option>
-                          <option value="0-200000">Moins de 200 000 €</option>
-                          <option value="200000-400000">200 000 € - 400 000 €</option>
-                          <option value="400000-600000">400 000 € - 600 000 €</option>
-                          <option value="600000-1000000">600 000 € - 1 000 000 €</option>
-                          <option value="1000000+">Plus de 1 000 000 €</option>
+                          <option value="0-150000">Moins de 150 000 TND</option>
+                          <option value="150000-300000">150 000 TND - 300 000 TND</option>
+                          <option value="300000-500000">300 000 TND - 500 000 TND</option>
+                          <option value="500000-800000">500 000 TND - 800 000 TND</option>
+                          <option value="800000+">Plus de 800 000 TND</option>
                         </select>
                       </div>
                       <div>
@@ -448,7 +509,7 @@ export default function ContactPage() {
               Nous Trouver
             </h2>
             <p className="text-gray-600">
-              Venez nous rendre visite dans nos locaux au cœur de Paris
+              Venez nous rendre visite dans nos locaux au cœur de Tunis
             </p>
           </div>
           
@@ -460,7 +521,7 @@ export default function ContactPage() {
                 Carte interactive - Intégration Google Maps
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                123 Avenue des Champs-Élysées, 75008 Paris
+                Avenue Habib Bourguiba, 1001 Tunis
               </p>
             </div>
           </div>

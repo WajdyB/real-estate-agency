@@ -1,0 +1,89 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#334155;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#475569;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="buildingGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:0.7" />
+    </linearGradient>
+    <linearGradient id="windowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#heroGradient)"/>
+  
+  <!-- Sky gradient -->
+  <rect width="1920" height="400" fill="url(#heroGradient)" opacity="0.3"/>
+  
+  <!-- Modern buildings silhouette -->
+  <g opacity="0.8">
+    <!-- Building 1 (Left) -->
+    <rect x="100" y="300" width="200" height="780" fill="url(#buildingGradient)" rx="8"/>
+    <rect x="120" y="320" width="40" height="60" fill="url(#windowGradient)" rx="4"/>
+    <rect x="180" y="320" width="40" height="60" fill="url(#windowGradient)" rx="4"/>
+    <rect x="120" y="400" width="40" height="60" fill="url(#windowGradient)" rx="4"/>
+    <rect x="180" y="400" width="40" height="60" fill="url(#windowGradient)" rx="4"/>
+    <rect x="120" y="480" width="40" height="60" fill="url(#windowGradient)" rx="4"/>
+    <rect x="180" y="480" width="40" height="60" fill="url(#windowGradient)" rx="4"/>
+    
+    <!-- Building 2 (Center) -->
+    <rect x="400" y="200" width="300" height="880" fill="url(#buildingGradient)" rx="12"/>
+    <rect x="420" y="220" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="500" y="220" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="580" y="220" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="420" y="320" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="500" y="320" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="580" y="320" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="420" y="420" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="500" y="420" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    <rect x="580" y="420" width="60" height="80" fill="url(#windowGradient)" rx="6"/>
+    
+    <!-- Building 3 (Right) -->
+    <rect x="800" y="350" width="250" height="730" fill="url(#buildingGradient)" rx="10"/>
+    <rect x="820" y="370" width="50" height="70" fill="url(#windowGradient)" rx="5"/>
+    <rect x="890" y="370" width="50" height="70" fill="url(#windowGradient)" rx="5"/>
+    <rect x="960" y="370" width="50" height="70" fill="url(#windowGradient)" rx="5"/>
+    <rect x="820" y="460" width="50" height="70" fill="url(#windowGradient)" rx="5"/>
+    <rect x="890" y="460" width="50" height="70" fill="url(#windowGradient)" rx="5"/>
+    <rect x="960" y="460" width="50" height="70" fill="url(#windowGradient)" rx="5"/>
+    
+    <!-- Building 4 (Far right) -->
+    <rect x="1200" y="280" width="180" height="800" fill="url(#buildingGradient)" rx="8"/>
+    <rect x="1220" y="300" width="35" height="55" fill="url(#windowGradient)" rx="3"/>
+    <rect x="1270" y="300" width="35" height="55" fill="url(#windowGradient)" rx="3"/>
+    <rect x="1320" y="300" width="35" height="55" fill="url(#windowGradient)" rx="3"/>
+    <rect x="1220" y="375" width="35" height="55" fill="url(#windowGradient)" rx="3"/>
+    <rect x="1270" y="375" width="35" height="55" fill="url(#windowGradient)" rx="3"/>
+    <rect x="1320" y="375" width="35" height="55" fill="url(#windowGradient)" rx="3"/>
+    
+    <!-- Building 5 (Far left) -->
+    <rect x="50" y="400" width="120" height="680" fill="url(#buildingGradient)" rx="6"/>
+    <rect x="65" y="420" width="30" height="50" fill="url(#windowGradient)" rx="3"/>
+    <rect x="105" y="420" width="30" height="50" fill="url(#windowGradient)" rx="3"/>
+    <rect x="65" y="490" width="30" height="50" fill="url(#windowGradient)" rx="3"/>
+    <rect x="105" y="490" width="30" height="50" fill="url(#windowGradient)" rx="3"/>
+  </g>
+  
+  <!-- Decorative elements -->
+  <g opacity="0.4">
+    <!-- Stars in sky -->
+    <circle cx="200" cy="150" r="2" fill="#fbbf24"/>
+    <circle cx="400" cy="120" r="1.5" fill="#fbbf24"/>
+    <circle cx="600" cy="180" r="2" fill="#fbbf24"/>
+    <circle cx="800" cy="100" r="1" fill="#fbbf24"/>
+    <circle cx="1000" cy="160" r="1.5" fill="#fbbf24"/>
+    <circle cx="1200" cy="140" r="2" fill="#fbbf24"/>
+    <circle cx="1400" cy="170" r="1" fill="#fbbf24"/>
+    <circle cx="1600" cy="130" r="1.5" fill="#fbbf24"/>
+    <circle cx="1800" cy="150" r="2" fill="#fbbf24"/>
+  </g>
+  
+  <!-- Subtle overlay for text readability -->
+  <rect width="1920" height="1080" fill="url(#heroGradient)" opacity="0.2"/>
+</svg>

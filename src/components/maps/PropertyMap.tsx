@@ -54,6 +54,27 @@ export default function PropertyMap({
   selectedProperty,
   onPropertySelect 
 }: PropertyMapProps) {
+  // Find a valid center position from properties if available
+  const validProperties = properties.filter(property => 
+    property.latitude != null && 
+    property.longitude != null && 
+    !isNaN(property.latitude) && 
+    !isNaN(property.longitude)
+  )
+  
+  const mapCenter = validProperties.length > 0 
+    ? [validProperties[0].latitude, validProperties[0].longitude] 
+    : center
+
+  // Debug logging
+  if (properties.length > 0 && validProperties.length === 0) {
+    console.warn('PropertyMap: All properties have invalid coordinates:', properties.map(p => ({
+      id: p.id,
+      title: p.title,
+      lat: p.latitude,
+      lng: p.longitude
+    })))
+  }
   const [isClient, setIsClient] = useState(false)
   const [map, setMap] = useState<any>(null)
 
@@ -64,7 +85,11 @@ export default function PropertyMap({
   useEffect(() => {
     if (map && selectedProperty) {
       const property = properties.find(p => p.id === selectedProperty)
-      if (property) {
+      if (property && 
+          property.latitude != null && 
+          property.longitude != null && 
+          !isNaN(property.latitude) && 
+          !isNaN(property.longitude)) {
         map.setView([property.latitude, property.longitude], 15)
       }
     }
@@ -98,10 +123,22 @@ export default function PropertyMap({
     )
   }
 
+  // Don't render map if no valid center position
+  if (!mapCenter || mapCenter[0] == null || mapCenter[1] == null || 
+      isNaN(mapCenter[0]) || isNaN(mapCenter[1])) {
+    return (
+      <div className="w-full rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center" style={{ height }}>
+        <div className="text-center text-gray-500">
+          <p>Aucune position valide disponible pour afficher la carte</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full rounded-lg overflow-hidden border border-gray-200" style={{ height }}>
       <MapContainer
-        center={center}
+        center={mapCenter}
         zoom={zoom}
         style={{ height: '100%', width: '100%' }}
         ref={setMap}
@@ -111,7 +148,14 @@ export default function PropertyMap({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        {properties.map((property) => (
+        {properties
+          .filter(property => 
+            property.latitude != null && 
+            property.longitude != null && 
+            !isNaN(property.latitude) && 
+            !isNaN(property.longitude)
+          )
+          .map((property) => (
           <Marker
             key={property.id}
             position={[property.latitude, property.longitude]}

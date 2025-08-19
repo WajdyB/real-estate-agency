@@ -58,7 +58,8 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
+    maxAge: process.env.NODE_ENV === 'development' ? 60 * 60 : 30 * 24 * 60 * 60, // 1 hour in dev, 30 days in production
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -74,6 +75,9 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
+  },
+  jwt: {
+    maxAge: process.env.NODE_ENV === 'development' ? 60 * 60 : 30 * 24 * 60 * 60, // 1 hour in dev, 30 days in production
   },
   pages: {
     signIn: '/auth/signin',

@@ -189,7 +189,7 @@ export default function PrivacyPage() {
                         <h4 className="font-semibold text-green-900 mb-2">Communication</h4>
                         <ul className="text-sm text-green-800 space-y-1">
                           <li>• Réponse à vos demandes</li>
-                          <li>• Envoi d'alertes personnalisées</li>
+          
                           <li>• Newsletter et actualités</li>
                           <li>• Support client</li>
                         </ul>

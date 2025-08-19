@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -23,61 +21,41 @@ import {
   Key,
   HeartHandshake
 } from 'lucide-react'
+import { prisma } from '@/lib/prisma'
 
-// Mock data - en production, ces données viendraient de l'API
-const featuredProperties = [
-  {
-    id: '1',
-    title: 'Appartement moderne 3 pièces - Paris 15ème',
-    price: 485000,
-    type: 'APARTMENT',
-    surface: 75,
-    rooms: 3,
-    bedrooms: 2,
-    bathrooms: 1,
-    address: '25 Rue de la Convention',
-    city: 'Paris',
-    images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'],
-    isFeatured: true,
-    createdAt: '2024-01-15',
-  },
-  {
-    id: '2',
-    title: 'Maison familiale avec jardin - Neuilly-sur-Seine',
-    price: 1250000,
-    type: 'HOUSE',
-    surface: 120,
-    rooms: 5,
-    bedrooms: 4,
-    bathrooms: 2,
-    address: '12 Avenue du Général de Gaulle',
-    city: 'Neuilly-sur-Seine',
-    images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
-    isFeatured: true,
-    createdAt: '2024-01-10',
-  },
-  {
-    id: '3',
-    title: 'Studio lumineux - Quartier Latin',
-    price: 295000,
-    type: 'STUDIO',
-    surface: 25,
-    rooms: 1,
-    bedrooms: 0,
-    bathrooms: 1,
-    address: '8 Rue de la Huchette',
-    city: 'Paris',
-    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800'],
-    isFeatured: false,
-    createdAt: '2024-01-05',
-  },
-]
+// Types for our API responses
+interface Property {
+  id: string
+  title: string
+  price: number
+  type: string
+  surface: number
+  rooms: number
+  bedrooms: number
+  bathrooms: number
+  address: string
+  city: string
+  images?: string[]
+  isFeatured: boolean
+  createdAt: string
+  user?: {
+    id: string
+    name?: string
+    email: string
+    phone?: string
+    image?: string
+  }
+  _count?: {
+    favorites: number
+    reviews: number
+  }
+}
 
 const stats = [
-  { icon: Building2, label: 'Propriétés vendues', value: '500+' },
-  { icon: Users, label: 'Clients satisfaits', value: '1,200+' },
-  { icon: Award, label: 'Années d\'expérience', value: '20+' },
-  { icon: TrendingUp, label: 'Taux de réussite', value: '95%' },
+  { icon: Building2, label: 'Propriétés vendues', value: '100+' },
+  { icon: Users, label: 'Clients satisfaits', value: '150+' },
+  { icon: Award, label: 'Années d\'expérience', value: '5+' },
+  { icon: TrendingUp, label: 'Taux de réussite', value: '70%' },
 ]
 
 const services = [
@@ -103,29 +81,85 @@ const services = [
 
 const testimonials = [
   {
-    name: 'Marie Dubois',
+    name: 'Mohamed Ben Ahmed',
     role: 'Propriétaire',
     content: 'Service exceptionnel ! L\'équipe m\'a accompagnée tout au long de la vente de mon appartement. Professionnalisme et résultats au rendez-vous.',
     rating: 5,
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'
+    image: '/images/placeholders/avatar-1.svg'
   },
   {
-    name: 'Jean Martin',
+    name: 'Imen Saadaoui',
     role: 'Acheteur',
     content: 'Grâce à leur expertise, j\'ai trouvé la maison de mes rêves en quelques semaines. Un accompagnement personnalisé et des conseils précieux.',
     rating: 5,
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100'
+    image: '/images/placeholders/avatar-2.svg'
   },
   {
-    name: 'Sophie Laurent',
+    name: 'Amine Ben Aissa',
     role: 'Investisseur',
     content: 'Excellent conseil en investissement locatif. Rentabilité au rendez-vous et gestion sans souci. Je recommande vivement !',
     rating: 5,
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100'
+    image: '/images/placeholders/avatar-3.svg'
   },
 ]
 
-export default function HomePage() {
+// Server-side data fetching
+async function getFeaturedProperties(): Promise<Property[]> {
+  try {
+    const properties = await prisma.property.findMany({
+      where: {
+        isFeatured: true,
+        isPublished: true,
+      },
+      orderBy: [
+        { isFeatured: 'desc' },
+        { createdAt: 'desc' }
+      ],
+      take: 6,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            image: true,
+          }
+        },
+        _count: {
+          select: {
+            favorites: true,
+            reviews: true,
+          }
+        }
+      }
+    })
+
+    // Convert Decimal objects to plain numbers for client components
+    return properties.map(property => ({
+      ...property,
+      price: Number(property.price),
+      surface: Number(property.surface),
+      rooms: Number(property.rooms),
+      bedrooms: Number(property.bedrooms),
+      bathrooms: Number(property.bathrooms),
+      floor: property.floor ? Number(property.floor) : undefined,
+      totalFloors: property.totalFloors ? Number(property.totalFloors) : undefined,
+      yearBuilt: property.yearBuilt ? Number(property.yearBuilt) : undefined,
+      latitude: property.latitude ? Number(property.latitude) : undefined,
+      longitude: property.longitude ? Number(property.longitude) : undefined,
+      views: Number(property.views),
+      createdAt: property.createdAt.toISOString(),
+    })) as Property[]
+  } catch (error) {
+    console.error('Error fetching featured properties:', error)
+    return []
+  }
+}
+
+export default async function HomePage() {
+  const featuredProperties = await getFeaturedProperties()
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -133,7 +167,7 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&h=1080&fit=crop"
+            src="/images/placeholders/hero-bg.svg"
             alt="Luxury real estate"
             fill
             className="object-cover"
@@ -197,9 +231,9 @@ export default function HomePage() {
                   <label className="text-sm font-medium text-gray-700">Budget max</label>
                   <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                     <option>Sans limite</option>
-                    <option>200 000 €</option>
-                    <option>500 000 €</option>
-                    <option>1 000 000 €</option>
+                    <option>150 000 TND</option>
+                    <option>350 000 TND</option>
+                    <option>800 000 TND</option>
                   </select>
                 </div>
                 <div className="flex items-end">
@@ -244,20 +278,41 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {featuredProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
+          {featuredProperties.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                {featuredProperties.map((property) => (
+                  <PropertyCard key={property.id} property={property} />
+                ))}
+              </div>
 
-          <div className="text-center">
-            <Link href="/properties">
-              <Button size="lg" variant="outline">
-                Voir toutes les propriétés
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
+              <div className="text-center">
+                <Link href="/properties">
+                  <Button size="lg" variant="outline">
+                    Voir toutes les propriétés
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-12 h-12 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Aucune propriété en vedette
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Aucune propriété en vedette n'est disponible pour le moment.
+              </p>
+              <Link href="/properties">
+                <Button>
+                  Voir toutes les propriétés
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -360,10 +415,10 @@ export default function HomePage() {
                 Nous contacter
               </Button>
             </Link>
-            <a href="tel:+33123456789">
-              <Button size="xl" variant="outline" className="border-white text-white hover:bg-white hover:text-primary-600">
+            <a href="tel:+216 71 500 200">
+              <Button size="xl" variant="secondary">
                 <Phone className="w-5 h-5 mr-2" />
-                01 23 45 67 89
+                +216 71 500 200
               </Button>
             </a>
           </div>

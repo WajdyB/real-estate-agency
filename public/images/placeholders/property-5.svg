@@ -1,0 +1,14 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#ecfdf5"/>
+  <rect x="180" y="180" width="440" height="320" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+  <rect x="200" y="200" width="100" height="140" fill="#a7f3d0"/>
+  <rect x="320" y="200" width="100" height="140" fill="#a7f3d0"/>
+  <rect x="440" y="200" width="100" height="140" fill="#a7f3d0"/>
+  <rect x="560" y="200" width="40" height="140" fill="#a7f3d0"/>
+  <rect x="200" y="360" width="100" height="120" fill="#a7f3d0"/>
+  <rect x="320" y="360" width="100" height="120" fill="#a7f3d0"/>
+  <rect x="440" y="360" width="100" height="120" fill="#a7f3d0"/>
+  <rect x="560" y="360" width="40" height="120" fill="#a7f3d0"/>
+  <rect x="240" y="100" width="320" height="60" fill="#059669"/>
+  <text x="400" y="135" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">VILLA</text>
+</svg>

@@ -44,7 +44,7 @@ export default function PropertyCard({
   onFavorite, 
   isFavorite = false 
 }: PropertyCardProps) {
-  const mainImage = property.images?.[0] || '/images/placeholder-property.jpg'
+  const mainImage = property.images?.[0] || '/images/placeholders/property-1.svg'
 
   const getTypeLabel = (type: string) => {
     const types: Record<string, string> = {

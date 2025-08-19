@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import { 
   User, 
   Save,
@@ -12,47 +13,95 @@ import {
   Shield,
   Key,
   Eye,
-  EyeOff
+  EyeOff,
+  Loader2,
+  Edit3,
+  X
 } from 'lucide-react'
+import Image from 'next/image'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 
+interface UserProfile {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  role: 'CLIENT' | 'AGENT' | 'ADMIN'
+  image?: string
+  createdAt: string
+  updatedAt: string
+}
+
+interface ApiResponse {
+  success: boolean
+  data: UserProfile
+  error?: string
+}
+
 export default function ProfilePage() {
+  const { data: session } = useSession()
   const [isSaving, setIsSaving] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Mock data - replace with real data from your API
   const [profile, setProfile] = useState({
-         personal: {
-       firstName: 'Jean',
-       lastName: 'Martin',
-       email: 'jean.martin@agence-premium.fr',
-       phone: '+33 6 12 34 56 78',
-       dateOfBirth: '1985-03-15',
-       address: '45 Rue de la Paix, 75001 Paris',
-       bio: 'Agent immobilier expérimenté avec plus de 10 ans d\'expérience dans la vente et la location de biens de prestige à Paris et sa région.',
-       avatar: null
-     },
-    professional: {
-      position: 'Agent immobilier senior',
-      department: 'Vente de prestige',
-      employeeId: 'EMP-001',
-      hireDate: '2014-09-01',
-      license: 'CARTE-2024-001234',
-      specialties: ['Appartements de luxe', 'Villas de prestige', 'Investissement locatif'],
-      languages: ['Français', 'Anglais', 'Espagnol']
+    personal: {
+      name: '',
+      email: '',
+      phone: '',
+      image: '',
     },
     security: {
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
-      twoFactorEnabled: true,
-      lastPasswordChange: '2024-01-01',
-      lastLogin: '2024-01-20T10:30:00'
     }
   })
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+
+  // Fetch user profile
+  const fetchProfile = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const response = await fetch('/api/users/profile')
+      const data: ApiResponse = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to fetch profile')
+      }
+
+      setProfile({
+        personal: {
+          name: data.data.name || '',
+          email: data.data.email || '',
+          phone: data.data.phone || '',
+          image: data.data.image || '',
+        },
+        security: {
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        }
+      })
+    } catch (err) {
+      console.error('Error fetching profile:', err)
+      setError(err instanceof Error ? err.message : 'Failed to fetch profile')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (session) {
+      fetchProfile()
+    }
+  }, [session])
 
   const handleProfileChange = (section: string, key: string, value: any) => {
     setProfile(prev => ({
@@ -66,10 +115,41 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setIsSaving(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setIsSaving(false)
-    // Show success message
+
+    try {
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: profile.personal.name,
+          email: profile.personal.email,
+          phone: profile.personal.phone,
+        }),
+      })
+
+      if (response.ok) {
+        alert('Profil mis à jour avec succès!')
+        // Clear password fields
+        setProfile(prev => ({
+          ...prev,
+          security: {
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+          }
+        }))
+      } else {
+        const data = await response.json()
+        alert(data.error || 'Erreur lors de la mise à jour du profil')
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      alert('Erreur lors de la mise à jour du profil')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handlePasswordChange = async () => {
@@ -77,394 +157,436 @@ export default function ProfilePage() {
       alert('Les mots de passe ne correspondent pas')
       return
     }
-    
+
+    if (profile.security.newPassword.length < 6) {
+      alert('Le nouveau mot de passe doit contenir au moins 6 caractères')
+      return
+    }
+
     setIsSaving(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setIsSaving(false)
-    
-    // Clear password fields
-    setProfile(prev => ({
-      ...prev,
-      security: {
-        ...prev.security,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
+
+    try {
+      const response = await fetch('/api/users/profile/password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword: profile.security.currentPassword,
+          newPassword: profile.security.newPassword,
+        }),
+      })
+
+      if (response.ok) {
+        alert('Mot de passe mis à jour avec succès!')
+        // Clear password fields
+        setProfile(prev => ({
+          ...prev,
+          security: {
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+          }
+        }))
+      } else {
+        const data = await response.json()
+        alert(data.error || 'Erreur lors de la mise à jour du mot de passe')
       }
-    }))
-    
-    // Show success message
+    } catch (error) {
+      console.error('Error updating password:', error)
+      alert('Erreur lors de la mise à jour du mot de passe')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    })
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Veuillez sélectionner une image')
+      return
+    }
+
+    // Validate file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+      alert('La taille de l\'image ne doit pas dépasser 2MB')
+      return
+    }
+
+    setUploadingAvatar(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('avatar', file)
+
+      const response = await fetch('/api/upload/avatar', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Update profile with new avatar
+        setProfile(prev => ({
+          ...prev,
+          personal: { ...prev.personal, image: data.data.avatarUrl }
+        }))
+        alert('Avatar mis à jour avec succès!')
+        
+        // Dispatch custom event to update header avatar
+        window.dispatchEvent(new CustomEvent('avatarUpdated'))
+      } else {
+        alert(data.error || 'Erreur lors du téléchargement')
+      }
+    } catch (error) {
+      console.error('Error uploading avatar:', error)
+      alert('Erreur lors du téléchargement')
+    } finally {
+      setUploadingAvatar(false)
+    }
   }
 
-  const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
+  const handleRemoveAvatar = async () => {
+    try {
+      const response = await fetch('/api/upload/avatar', {
+        method: 'DELETE',
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setProfile(prev => ({
+          ...prev,
+          personal: { ...prev.personal, image: '' }
+        }))
+        alert('Avatar supprimé avec succès!')
+        
+        // Dispatch custom event to update header avatar
+        window.dispatchEvent(new CustomEvent('avatarUpdated'))
+      } else {
+        alert(data.error || 'Erreur lors de la suppression')
+      }
+    } catch (error) {
+      console.error('Error removing avatar:', error)
+      alert('Erreur lors de la suppression')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-16">
+        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <User className="w-12 h-12 text-red-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Erreur de chargement</h3>
+        <p className="text-gray-600 mb-6">{error}</p>
+        <Button onClick={fetchProfile}>Réessayer</Button>
+      </div>
+    )
   }
 
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-display font-bold text-gray-900">Mon Profil</h1>
-          <p className="text-gray-600">Gérez vos informations personnelles et professionnelles</p>
-        </div>
-        <Button onClick={handleSave} disabled={isSaving}>
-          <Save className="w-4 h-4 mr-2" />
-          {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
-        </Button>
+      <div>
+        <h1 className="text-3xl font-display font-bold text-gray-900">Mon profil</h1>
+        <p className="text-gray-600">Gérez vos informations personnelles et votre sécurité</p>
       </div>
 
-      {/* Profile overview */}
-      <Card className="p-6">
-        <div className="flex items-center space-x-6">
-                     {/* Avatar */}
-           <div className="relative">
-             <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center overflow-hidden">
-               {profile.personal.avatar ? (
-                 <img 
-                   src={profile.personal.avatar} 
-                   alt="Avatar" 
-                   className="w-full h-full object-cover"
-                 />
-               ) : (
-                 <span className="text-2xl font-bold text-white">
-                   {profile.personal.firstName.charAt(0)}{profile.personal.lastName.charAt(0)}
-                 </span>
-               )}
-             </div>
-             <button className="absolute bottom-0 right-0 p-2 bg-primary-600 text-white rounded-full hover:bg-primary-700">
-               <Camera className="w-4 h-4" />
-             </button>
-           </div>
-
-          {/* Basic info */}
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {profile.personal.firstName} {profile.personal.lastName}
-            </h2>
-            <p className="text-lg text-gray-600">{profile.professional.position}</p>
-            <p className="text-gray-500">{profile.professional.department}</p>
-            
-            <div className="flex items-center space-x-4 mt-3 text-sm text-gray-600">
-              <span className="flex items-center">
-                <Mail className="w-4 h-4 mr-1" />
-                {profile.personal.email}
-              </span>
-              <span className="flex items-center">
-                <Phone className="w-4 h-4 mr-1" />
-                {profile.personal.phone}
-              </span>
-            </div>
-          </div>
-
-          {/* Quick stats */}
-          <div className="text-right">
-            <div className="text-sm text-gray-500">Employé depuis</div>
-            <div className="text-lg font-semibold text-gray-900">
-              {formatDate(profile.professional.hireDate)}
-            </div>
-            <div className="text-sm text-gray-500 mt-2">Dernière connexion</div>
-            <div className="text-sm text-gray-900">
-              {formatDateTime(profile.security.lastLogin)}
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {/* Personal Information */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-          <User className="w-5 h-5 mr-2" />
-          Informations personnelles
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Prénom
-            </label>
-            <Input
-              value={profile.personal.firstName}
-              onChange={(e) => handleProfileChange('personal', 'firstName', e.target.value)}
-              placeholder="Votre prénom"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Nom
-            </label>
-            <Input
-              value={profile.personal.lastName}
-              onChange={(e) => handleProfileChange('personal', 'lastName', e.target.value)}
-              placeholder="Votre nom"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
-            </label>
-            <Input
-              type="email"
-              value={profile.personal.email}
-              onChange={(e) => handleProfileChange('personal', 'email', e.target.value)}
-              placeholder="votre.email@exemple.fr"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Téléphone
-            </label>
-            <Input
-              value={profile.personal.phone}
-              onChange={(e) => handleProfileChange('personal', 'phone', e.target.value)}
-              placeholder="+33 6 12 34 56 78"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Date de naissance
-            </label>
-            <Input
-              type="date"
-              value={profile.personal.dateOfBirth}
-              onChange={(e) => handleProfileChange('personal', 'dateOfBirth', e.target.value)}
-            />
-          </div>
-          
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Adresse
-            </label>
-            <Input
-              value={profile.personal.address}
-              onChange={(e) => handleProfileChange('personal', 'address', e.target.value)}
-              placeholder="Votre adresse complète"
-            />
-          </div>
-          
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Biographie
-            </label>
-            <textarea
-              value={profile.personal.bio}
-              onChange={(e) => handleProfileChange('personal', 'bio', e.target.value)}
-              rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="Parlez-nous de vous..."
-            />
-          </div>
-        </div>
-      </Card>
-
-      {/* Professional Information */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-          <User className="w-5 h-5 mr-2" />
-          Informations professionnelles
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Poste
-            </label>
-            <Input
-              value={profile.professional.position}
-              onChange={(e) => handleProfileChange('professional', 'position', e.target.value)}
-              placeholder="Votre poste actuel"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Département
-            </label>
-            <Input
-              value={profile.professional.department}
-              onChange={(e) => handleProfileChange('professional', 'department', e.target.value)}
-              placeholder="Votre département"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              ID Employé
-            </label>
-            <Input
-              value={profile.professional.employeeId}
-              disabled
-              className="bg-gray-50"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Date d'embauche
-            </label>
-            <Input
-              type="date"
-              value={profile.professional.hireDate}
-              onChange={(e) => handleProfileChange('professional', 'hireDate', e.target.value)}
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Numéro de carte professionnelle
-            </label>
-            <Input
-              value={profile.professional.license}
-              onChange={(e) => handleProfileChange('professional', 'license', e.target.value)}
-              placeholder="CARTE-2024-001234"
-            />
-          </div>
-          
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Spécialités
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {profile.professional.specialties.map((specialty, index) => (
-                <span key={index} className="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-sm">
-                  {specialty}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Langues parlées
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {profile.professional.languages.map((language, index) => (
-                <span key={index} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                  {language}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {/* Security Settings */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-          <Shield className="w-5 h-5 mr-2" />
-          Sécurité et mot de passe
-        </h3>
-        
-        <div className="space-y-6">
-          {/* Current password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Mot de passe actuel
-            </label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                value={profile.security.currentPassword}
-                onChange={(e) => handleProfileChange('security', 'currentPassword', e.target.value)}
-                placeholder="Entrez votre mot de passe actuel"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-gray-400" />
-                ) : (
-                  <Eye className="h-4 w-4 text-gray-400" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* New password */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nouveau mot de passe
-              </label>
-              <div className="relative">
-                <Input
-                  type={showNewPassword ? 'text' : 'password'}
-                  value={profile.security.newPassword}
-                  onChange={(e) => handleProfileChange('security', 'newPassword', e.target.value)}
-                  placeholder="Nouveau mot de passe"
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                >
-                  {showNewPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
-                  )}
-                </button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Personal Information */}
+        <Card>
+          <div className="p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                <User className="w-5 h-5 text-primary-600" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Informations personnelles</h2>
+                <p className="text-sm text-gray-600">Mettez à jour vos informations de base</p>
               </div>
             </div>
-            
+
+            {/* Avatar Upload Section */}
+            <div className="flex items-center space-x-4 mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="relative">
+                {profile.personal.image ? (
+                  <Image
+                    src={profile.personal.image}
+                    alt="Avatar"
+                    width={64}
+                    height={64}
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center">
+                    <User className="w-8 h-8 text-white" />
+                  </div>
+                )}
+                
+                {/* Avatar Upload Button */}
+                <div className="absolute -bottom-1 -right-1">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                    className="hidden"
+                    id="admin-avatar-upload"
+                    disabled={uploadingAvatar}
+                  />
+                  <label
+                    htmlFor="admin-avatar-upload"
+                    className={`w-6 h-6 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors ${
+                      uploadingAvatar ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {uploadingAvatar ? (
+                      <Loader2 className="w-3 h-3 text-gray-600 animate-spin" />
+                    ) : (
+                      <Edit3 className="w-3 h-3 text-gray-600" />
+                    )}
+                  </label>
+                </div>
+              </div>
+              
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-gray-900">Photo de profil</h3>
+                <p className="text-xs text-gray-600 mb-2">JPG, PNG ou WebP. Max 2MB.</p>
+                {profile.personal.image && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRemoveAvatar}
+                    className="text-red-600 border-red-200 hover:bg-red-50"
+                  >
+                    <X className="w-3 h-3 mr-1" />
+                    Supprimer
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nom complet
+                </label>
+                <Input
+                  value={profile.personal.name}
+                  onChange={(e) => handleProfileChange('personal', 'name', e.target.value)}
+                  placeholder="Votre nom complet"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <Input
+                  type="email"
+                  value={profile.personal.email}
+                  onChange={(e) => handleProfileChange('personal', 'email', e.target.value)}
+                  placeholder="votre@email.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Téléphone
+                </label>
+                <Input
+                  value={profile.personal.phone}
+                  onChange={(e) => handleProfileChange('personal', 'phone', e.target.value)}
+                  placeholder="+33 6 12 34 56 78"
+                />
+              </div>
+
+              <Button 
+                onClick={handleSave} 
+                disabled={isSaving}
+                className="w-full"
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sauvegarde...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Sauvegarder les modifications
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Security Settings */}
+        <Card>
+          <div className="p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Shield className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Sécurité</h2>
+                <p className="text-sm text-gray-600">Changez votre mot de passe</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mot de passe actuel
+                </label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    value={profile.security.currentPassword}
+                    onChange={(e) => handleProfileChange('security', 'currentPassword', e.target.value)}
+                    placeholder="Votre mot de passe actuel"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nouveau mot de passe
+                </label>
+                <div className="relative">
+                  <Input
+                    type={showNewPassword ? 'text' : 'password'}
+                    value={profile.security.newPassword}
+                    onChange={(e) => handleProfileChange('security', 'newPassword', e.target.value)}
+                    placeholder="Nouveau mot de passe"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirmer le nouveau mot de passe
+                </label>
+                <Input
+                  type="password"
+                  value={profile.security.confirmPassword}
+                  onChange={(e) => handleProfileChange('security', 'confirmPassword', e.target.value)}
+                  placeholder="Confirmez le nouveau mot de passe"
+                />
+              </div>
+
+              <Button 
+                onClick={handlePasswordChange} 
+                disabled={isSaving}
+                variant="outline"
+                className="w-full"
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Mise à jour...
+                  </>
+                ) : (
+                  <>
+                    <Key className="w-4 h-4 mr-2" />
+                    Changer le mot de passe
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Account Information */}
+      <Card>
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <User className="w-5 h-5 text-blue-600" />
+            </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirmer le nouveau mot de passe
-              </label>
-              <Input
-                type="password"
-                value={profile.security.confirmPassword}
-                onChange={(e) => handleProfileChange('security', 'confirmPassword', e.target.value)}
-                placeholder="Confirmez le nouveau mot de passe"
-              />
+              <h2 className="text-lg font-semibold text-gray-900">Informations du compte</h2>
+              <p className="text-sm text-gray-600">Détails de votre compte</p>
             </div>
           </div>
 
-          {/* Password change button */}
-          <div className="flex items-center justify-between">
-            <Button onClick={handlePasswordChange} disabled={isSaving}>
-              <Key className="w-4 h-4 mr-2" />
-              {isSaving ? 'Modification...' : 'Modifier le mot de passe'}
-            </Button>
-            
-            <div className="text-sm text-gray-500">
-              Dernière modification : {formatDate(profile.security.lastPasswordChange)}
-            </div>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Rôle</p>
+                  <p className="text-sm text-gray-600">
+                    {session?.user?.role === 'ADMIN' ? 'Administrateur' : 
+                     session?.user?.role === 'AGENT' ? 'Agent immobilier' : 'Client'}
+                  </p>
+                </div>
+              </div>
 
-          {/* Two-factor authentication */}
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-            <div>
-              <h4 className="font-medium text-gray-900">Authentification à deux facteurs</h4>
-              <p className="text-sm text-gray-600">Sécurisez votre compte avec un code supplémentaire</p>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Membre depuis</p>
+                  <p className="text-sm text-gray-600">
+                    {session?.user?.createdAt ? new Date(session.user.createdAt).toLocaleDateString('fr-FR') : 'N/A'}
+                  </p>
+                </div>
+              </div>
             </div>
-            <input
-              type="checkbox"
-              checked={profile.security.twoFactorEnabled}
-              onChange={(e) => handleProfileChange('security', 'twoFactorEnabled', e.target.checked)}
-              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-            />
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Mail className="w-4 h-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Email de connexion</p>
+                  <p className="text-sm text-gray-600">{session?.user?.email}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Statut du compte</p>
+                  <p className="text-sm text-green-600">Actif</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Card>

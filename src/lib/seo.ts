@@ -18,7 +18,7 @@ interface SEOProps {
 const defaultMetadata = {
   title: 'Agence Immobilière Premium',
   description: 'Découvrez notre sélection exclusive de propriétés immobilières. Achat, vente, location avec notre équipe d\'experts. Service personnalisé et accompagnement sur mesure.',
-  keywords: 'immobilier, achat, vente, location, appartement, maison, villa, Paris, France',
+  keywords: 'immobilier, achat, vente, location, appartement, maison, villa, Tunis, Tunisie',
   image: '/images/og-default.jpg',
   url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
 }
@@ -34,7 +34,7 @@ export function generateMetadata({
   modifiedTime,
   author,
   price,
-  currency = 'EUR',
+  currency = 'TND',
   availability = 'in stock',
 }: SEOProps = {}): Metadata {
   const fullTitle = title 
@@ -140,9 +140,9 @@ export function generatePropertyMetadata(property: {
   }
 
   const typeLabel = propertyTypes[property.type] || property.type
-  const priceFormatted = new Intl.NumberFormat('fr-FR', {
+  const priceFormatted = new Intl.NumberFormat('fr-TN', {
     style: 'currency',
-    currency: 'EUR',
+    currency: 'TND',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(property.price)
@@ -155,7 +155,7 @@ export function generatePropertyMetadata(property: {
     url: `/properties/${property.id}`,
     type: 'product',
     price: property.price,
-    currency: 'EUR',
+    currency: 'TND',
     availability: 'in stock',
   })
 }
@@ -215,19 +215,19 @@ export function generateOrganizationSchema() {
     url: process.env.NEXT_PUBLIC_APP_URL,
     logo: `${process.env.NEXT_PUBLIC_APP_URL}/images/logo.png`,
     image: `${process.env.NEXT_PUBLIC_APP_URL}/images/og-default.jpg`,
-    telephone: '+33123456789',
-    email: 'contact@agence-premium.fr',
+    telephone: '+216 71 234 567',
+    email: 'contact@agence-premium.tn',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '123 Avenue des Champs-Élysées',
-      addressLocality: 'Paris',
-      postalCode: '75008',
-      addressCountry: 'FR',
+      streetAddress: 'Avenue Habib Bourguiba, Centre Ville',
+      addressLocality: 'Tunis',
+      postalCode: '1001',
+      addressCountry: 'TN',
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 48.8566,
-      longitude: 2.3522,
+      latitude: 36.8065,
+      longitude: 10.1815,
     },
     openingHoursSpecification: [
       {
@@ -284,14 +284,14 @@ export function generatePropertySchema(property: {
     price: {
       '@type': 'PriceSpecification',
       price: property.price,
-      priceCurrency: 'EUR',
+      priceCurrency: 'TND',
     },
     address: {
       '@type': 'PostalAddress',
       streetAddress: property.address,
       addressLocality: property.city,
       postalCode: property.zipCode,
-      addressCountry: 'FR',
+      addressCountry: 'TN',
     },
     geo: {
       '@type': 'GeoCoordinates',
@@ -311,7 +311,7 @@ export function generatePropertySchema(property: {
     offers: {
       '@type': 'Offer',
       price: property.price,
-      priceCurrency: 'EUR',
+      priceCurrency: 'TND',
       availability: 'https://schema.org/InStock',
       seller: {
         '@type': 'RealEstateAgent',

@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/Button'
 import { 
@@ -14,13 +15,14 @@ import {
   Menu, 
   X,
   Heart,
-  Bell
+  Calendar
 } from 'lucide-react'
 
 export default function Header() {
   const { data: session } = useSession()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [userAvatar, setUserAvatar] = useState<string | null>(null)
 
   const navigation = [
     { name: 'Accueil', href: '/', icon: Home },
@@ -29,6 +31,43 @@ export default function Header() {
     { name: 'Blog', href: '/blog', icon: null },
     { name: 'Contact', href: '/contact', icon: null },
   ]
+
+  // Fetch user avatar function
+  const fetchUserAvatar = async () => {
+    if (!session?.user) {
+      setUserAvatar(null)
+      return
+    }
+
+    try {
+      const response = await fetch('/api/users/profile')
+      const data = await response.json()
+      
+      if (data.success && data.data.image) {
+        setUserAvatar(data.data.image)
+      } else {
+        setUserAvatar(null)
+      }
+    } catch (error) {
+      console.error('Error fetching user avatar:', error)
+      setUserAvatar(null)
+    }
+  }
+
+  // Fetch user avatar when session is available
+  useEffect(() => {
+    fetchUserAvatar()
+  }, [session])
+
+  // Listen for avatar updates via custom event
+  useEffect(() => {
+    const handleAvatarUpdate = () => {
+      fetchUserAvatar()
+    }
+
+    window.addEventListener('avatarUpdated', handleAvatarUpdate)
+    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate)
+  }, [session])
 
   return (
     <header className="bg-white/95 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
@@ -65,10 +104,14 @@ export default function Header() {
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">
-                      {session.user.name?.charAt(0) || 'U'}
-                    </span>
+                  <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-gray-200 hover:ring-primary-300 transition-all">
+                    <Image
+                      src={userAvatar || '/images/placeholders/default-avatar.svg'}
+                      alt={session.user.name || 'Avatar'}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 object-cover"
+                    />
                   </div>
                   <span className="hidden sm:block text-gray-700 font-medium">
                     {session.user.name}
@@ -95,13 +138,14 @@ export default function Header() {
                       <span>Favoris</span>
                     </Link>
                     <Link
-                      href="/alerts"
+                      href="/appointments"
                       className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
-                      <Bell className="w-4 h-4" />
-                      <span>Alertes</span>
+                      <Calendar className="w-4 h-4" />
+                      <span>Mes Rendez-vous</span>
                     </Link>
+
                     {(session.user.role === 'ADMIN' || session.user.role === 'AGENT') && (
                       <Link
                         href="/admin"

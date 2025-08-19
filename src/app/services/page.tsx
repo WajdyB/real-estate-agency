@@ -37,7 +37,7 @@ export default function ServicesPage() {
         'Suivi juridique et administratif complet',
         'Aide au financement et montage de dossier'
       ],
-      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600',
+      image: '/images/placeholders/property-1.svg',
       price: 'Commission vendeur',
       duration: '2-6 mois',
       satisfaction: '98%',
@@ -55,7 +55,7 @@ export default function ServicesPage() {
         'Présélection des acquéreurs',
         'Accompagnement jusqu\'à la signature'
       ],
-      image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600',
+      image: '/images/placeholders/property-2.svg',
       price: '3-5% du prix',
       duration: '3-8 semaines',
       satisfaction: '96%',
@@ -73,7 +73,7 @@ export default function ServicesPage() {
         'Gestion locative complète',
         'Suivi de performance de votre portefeuille'
       ],
-      image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600',
+      image: '/images/placeholders/property-3.svg',
       price: 'Sur devis',
       duration: 'Long terme',
       satisfaction: '94%',
@@ -145,21 +145,21 @@ export default function ServicesPage() {
       service: 'Achat Appartement',
       content: 'Service exceptionnel ! L\'équipe m\'a trouvé l\'appartement parfait en 3 semaines.',
       rating: 5,
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'
+      image: '/images/placeholders/avatar-1.svg'
     },
     {
       name: 'Pierre Martin',
       service: 'Vente Maison',
       content: 'Vendu 15% au-dessus de l\'estimation initiale grâce à leur stratégie marketing.',
       rating: 5,
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100'
+      image: '/images/placeholders/avatar-2.svg'
     },
     {
       name: 'Sophie Laurent',
       service: 'Investissement',
       content: 'Portfolio locatif rentable grâce à leurs conseils avisés.',
       rating: 5,
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100'
+      image: '/images/placeholders/avatar-3.svg'
     }
   ]
 

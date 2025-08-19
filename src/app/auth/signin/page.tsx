@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { signIn, getSession } from 'next-auth/react'
+import { signIn, getSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -64,6 +64,15 @@ export default function SignInPage() {
     } catch (error) {
       toast.error('Erreur lors de la connexion')
       setIsLoading(false)
+    }
+  }
+
+  const handleClearSession = async () => {
+    try {
+      await signOut({ redirect: false })
+      toast.success('Session effacée')
+    } catch (error) {
+      toast.error('Erreur lors de l\'effacement de la session')
     }
   }
 
@@ -204,7 +213,7 @@ export default function SignInPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center space-y-2">
               <p className="text-gray-600">
                 Pas encore de compte ?{' '}
                 <Link
@@ -214,6 +223,13 @@ export default function SignInPage() {
                   S'inscrire
                 </Link>
               </p>
+              <button
+                type="button"
+                onClick={handleClearSession}
+                className="text-xs text-gray-500 hover:text-gray-700 underline"
+              >
+                Effacer la session (test)
+              </button>
             </div>
           </CardContent>
         </Card>
@@ -225,8 +241,8 @@ export default function SignInPage() {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="space-y-2 text-sm text-blue-700">
-              <p><strong>Admin:</strong> admin@agence-immobiliere.fr / admin123</p>
-              <p><strong>Agent:</strong> agent@agence-immobiliere.fr / agent123</p>
+              <p><strong>Admin:</strong> admin@agence-premium.tn / admin123</p>
+              <p><strong>Agent:</strong> agent@agence-premium.tn / agent123</p>
             </div>
           </CardContent>
         </Card>

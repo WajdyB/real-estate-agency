@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -12,98 +12,232 @@ import {
   Map, 
   Grid3X3,
   MapPin,
-  Filter
+  Filter,
+  Loader2,
+  X,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
+import { formatPrice, formatSurface } from '@/lib/utils'
 
-// Mock data - en production, ces données viendraient de l'API
-const mockProperties = [
-  {
-    id: '1',
-    title: 'Appartement moderne 3 pièces - Paris 15ème',
-    price: 485000,
-    type: 'APARTMENT',
-    surface: 75,
-    rooms: 3,
-    bedrooms: 2,
-    bathrooms: 1,
-    address: '25 Rue de la Convention',
-    city: 'Paris',
-    latitude: 48.8434,
-    longitude: 2.2945,
-    images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'],
-    isFeatured: true,
-    createdAt: '2024-01-15',
-  },
-  {
-    id: '2',
-    title: 'Maison familiale avec jardin - Neuilly-sur-Seine',
-    price: 1250000,
-    type: 'HOUSE',
-    surface: 120,
-    rooms: 5,
-    bedrooms: 4,
-    bathrooms: 2,
-    address: '12 Avenue du Général de Gaulle',
-    city: 'Neuilly-sur-Seine',
-    latitude: 48.8846,
-    longitude: 2.2691,
-    images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'],
-    isFeatured: true,
-    createdAt: '2024-01-10',
-  },
-  {
-    id: '3',
-    title: 'Studio lumineux - Quartier Latin',
-    price: 295000,
-    type: 'STUDIO',
-    surface: 25,
-    rooms: 1,
-    bedrooms: 0,
-    bathrooms: 1,
-    address: '8 Rue de la Huchette',
-    city: 'Paris',
-    latitude: 48.8529,
-    longitude: 2.3469,
-    images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800'],
-    isFeatured: false,
-    createdAt: '2024-01-05',
-  },
-  {
-    id: '4',
-    title: 'Villa contemporaine avec piscine - Cannes',
-    price: 2800000,
-    type: 'VILLA',
-    surface: 200,
-    rooms: 6,
-    bedrooms: 5,
-    bathrooms: 3,
-    address: '45 Boulevard de la Croisette',
-    city: 'Cannes',
-    latitude: 43.5528,
-    longitude: 7.0174,
-    images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800'],
-    isFeatured: true,
-    createdAt: '2024-01-12',
-  },
-]
+// Types for search functionality
+interface Property {
+  id: string
+  title: string
+  description: string
+  price: number
+  surface: number
+  bedrooms: number
+  bathrooms: number
+  type: string
+  category: string
+  status: string
+  address: string
+  city: string
+  postalCode: string
+  latitude: number
+  longitude: number
+  images: string[]
+  features: string[]
+  views: number
+  createdAt: string
+  updatedAt: string
+  agent: {
+    id: string
+    name: string
+    email: string
+    phone: string
+    image?: string
+  }
+  _count: {
+    favorites: number
+    reviews: number
+  }
+}
+
+interface SearchFilters {
+  query: string
+  type: string
+  category: string
+  minPrice: string
+  maxPrice: string
+  minSurface: string
+  maxSurface: string
+  bedrooms: string
+  bathrooms: string
+  city: string
+  postalCode: string
+  features: string[]
+}
+
+interface SearchSuggestion {
+  type: 'city' | 'property' | 'address'
+  text: string
+  subtitle: string
+  value: string
+  id?: string
+}
+
+interface AvailableFilters {
+  cities: string[]
+  categories: string[]
+  priceRange: { min: number; max: number }
+  surfaceRange: { min: number; max: number }
+  features: string[]
+  propertyTypes: Array<{ type: string; count: number }>
+  bedrooms: number[]
+  bathrooms: number[]
+}
 
 export default function SearchPage() {
   const [viewMode, setViewMode] = useState<'map' | 'grid'>('map')
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null)
-  const [filters, setFilters] = useState({
-    search: '',
+  const [properties, setProperties] = useState<Property[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [showFilters, setShowFilters] = useState(false)
+  const [showAutocomplete, setShowAutocomplete] = useState(false)
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([])
+  const [availableFilters, setAvailableFilters] = useState<AvailableFilters | null>(null)
+  const [pagination, setPagination] = useState({
+    page: 1,
+    total: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPrevPage: false
+  })
+
+  const [filters, setFilters] = useState<SearchFilters>({
+    query: '',
     type: '',
+    category: '',
     minPrice: '',
     maxPrice: '',
     minSurface: '',
-    rooms: '',
+    maxSurface: '',
+    bedrooms: '',
+    bathrooms: '',
     city: '',
+    postalCode: '',
+    features: []
   })
-  const [showFilters, setShowFilters] = useState(false)
 
-  const handleFilterChange = (key: string, value: string) => {
+  // Fetch available filters
+  const fetchFilters = useCallback(async () => {
+    try {
+      const response = await fetch('/api/search/filters')
+      const data = await response.json()
+      
+      if (data.success) {
+        setAvailableFilters(data.data)
+      }
+    } catch (err) {
+      console.error('Error fetching filters:', err)
+    }
+  }, [])
+
+  // Fetch autocomplete suggestions
+  const fetchSuggestions = useCallback(async (query: string) => {
+    if (!query || query.length < 2) {
+      setSuggestions([])
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/search/autocomplete?q=${encodeURIComponent(query)}`)
+      const data = await response.json()
+      
+      if (data.success) {
+        setSuggestions(data.data)
+        setShowAutocomplete(true)
+      }
+    } catch (err) {
+      console.error('Error fetching suggestions:', err)
+    }
+  }, [])
+
+  // Fetch search results
+  const fetchResults = useCallback(async (page = 1) => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '12',
+        sortBy: 'createdAt',
+        sortOrder: 'desc'
+      })
+
+      // Add filters to params
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value && value !== '') {
+          if (Array.isArray(value)) {
+            if (value.length > 0) {
+              params.append(key, value.join(','))
+            }
+          } else {
+            params.append(key, value)
+          }
+        }
+      })
+
+      const response = await fetch(`/api/search?${params}`)
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to fetch search results')
+      }
+
+      setProperties(data.data)
+      setPagination(data.pagination)
+    } catch (err) {
+      console.error('Error fetching search results:', err)
+      setError(err instanceof Error ? err.message : 'Failed to fetch search results')
+    } finally {
+      setLoading(false)
+    }
+  }, [filters])
+
+  // Handle filter changes
+  const handleFilterChange = (key: string, value: string | string[]) => {
     setFilters(prev => ({ ...prev, [key]: value }))
   }
+
+  // Handle suggestion selection
+  const handleSuggestionSelect = (suggestion: SearchSuggestion) => {
+    if (suggestion.type === 'city') {
+      handleFilterChange('city', suggestion.value)
+    } else if (suggestion.type === 'property') {
+      handleFilterChange('query', suggestion.value)
+    } else if (suggestion.type === 'address') {
+      handleFilterChange('query', suggestion.value)
+    }
+    setShowAutocomplete(false)
+  }
+
+  // Debounced search
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchResults(1)
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [filters, fetchResults])
+
+  // Fetch filters on mount
+  useEffect(() => {
+    fetchFilters()
+  }, [fetchFilters])
+
+  // Handle autocomplete
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchSuggestions(filters.query)
+    }, 200)
+
+    return () => clearTimeout(timeoutId)
+  }, [filters.query, fetchSuggestions])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -125,16 +259,41 @@ export default function SearchPage() {
       <section className="py-8 bg-white border-b">
         <div className="container">
           <div className="flex flex-col lg:flex-row gap-4 mb-6">
-            <div className="flex-1">
+            <div className="flex-1 relative">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   placeholder="Rechercher par ville, quartier, adresse..."
-                  value={filters.search}
-                  onChange={(e) => handleFilterChange('search', e.target.value)}
+                  value={filters.query}
+                  onChange={(e) => handleFilterChange('query', e.target.value)}
+                  onFocus={() => setShowAutocomplete(true)}
                   className="pl-10"
                 />
+                {filters.query && (
+                  <button
+                    onClick={() => handleFilterChange('query', '')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
+
+              {/* Autocomplete dropdown */}
+              {showAutocomplete && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 mt-1">
+                  {suggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSuggestionSelect(suggestion)}
+                      className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                    >
+                      <div className="font-medium text-gray-900">{suggestion.text}</div>
+                      <div className="text-sm text-gray-500">{suggestion.subtitle}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -144,6 +303,7 @@ export default function SearchPage() {
               >
                 <SlidersHorizontal className="w-4 h-4 mr-2" />
                 Filtres
+                {showFilters ? <ChevronUp className="w-4 h-4 ml-1" /> : <ChevronDown className="w-4 h-4 ml-1" />}
               </Button>
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
@@ -163,7 +323,7 @@ export default function SearchPage() {
           </div>
 
           {/* Advanced Filters */}
-          {showFilters && (
+          {showFilters && availableFilters && (
             <Card className="mb-6">
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -183,11 +343,62 @@ export default function SearchPage() {
                       className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                     >
                       <option value="">Tous types</option>
-                      <option value="APARTMENT">Appartement</option>
-                      <option value="HOUSE">Maison</option>
-                      <option value="STUDIO">Studio</option>
-                      <option value="LOFT">Loft</option>
-                      <option value="VILLA">Villa</option>
+                      {availableFilters.propertyTypes.map(pt => (
+                        <option key={pt.type} value={pt.type}>
+                          {pt.type} ({pt.count})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Catégorie
+                    </label>
+                    <select
+                      value={filters.category}
+                      onChange={(e) => handleFilterChange('category', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="">Toutes catégories</option>
+                      {availableFilters.categories.map(category => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ville
+                    </label>
+                    <select
+                      value={filters.city}
+                      onChange={(e) => handleFilterChange('city', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="">Toutes les villes</option>
+                      {availableFilters.cities.map(city => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Chambres
+                    </label>
+                    <select
+                      value={filters.bedrooms}
+                      onChange={(e) => handleFilterChange('bedrooms', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="">Toutes</option>
+                      {availableFilters.bedrooms.map(bed => (
+                        <option key={bed} value={bed}>
+                          {bed}+ chambres
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div>
@@ -196,7 +407,7 @@ export default function SearchPage() {
                     </label>
                     <Input
                       type="number"
-                      placeholder="Ex: 200000"
+                      placeholder={`Min: ${formatPrice(availableFilters.priceRange.min)}`}
                       value={filters.minPrice}
                       onChange={(e) => handleFilterChange('minPrice', e.target.value)}
                     />
@@ -207,7 +418,7 @@ export default function SearchPage() {
                     </label>
                     <Input
                       type="number"
-                      placeholder="Ex: 800000"
+                      placeholder={`Max: ${formatPrice(availableFilters.priceRange.max)}`}
                       value={filters.maxPrice}
                       onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
                     />
@@ -218,9 +429,20 @@ export default function SearchPage() {
                     </label>
                     <Input
                       type="number"
-                      placeholder="Ex: 50"
+                      placeholder={`Min: ${availableFilters.surfaceRange.min}m²`}
                       value={filters.minSurface}
                       onChange={(e) => handleFilterChange('minSurface', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Surface max (m²)
+                    </label>
+                    <Input
+                      type="number"
+                      placeholder={`Max: ${availableFilters.surfaceRange.max}m²`}
+                      value={filters.maxSurface}
+                      onChange={(e) => handleFilterChange('maxSurface', e.target.value)}
                     />
                   </div>
                 </div>
@@ -233,12 +455,30 @@ export default function SearchPage() {
       {/* Results */}
       <section className="py-8">
         <div className="container">
-          {viewMode === 'map' ? (
+          {loading ? (
+            <div className="text-center py-16">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary-600" />
+              <p className="text-gray-600">Recherche en cours...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-12 h-12 text-red-500" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Erreur de recherche
+              </h3>
+              <p className="text-gray-600 mb-6">{error}</p>
+              <Button onClick={() => fetchResults()}>
+                Réessayer
+              </Button>
+            </div>
+          ) : viewMode === 'map' ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Map */}
               <div className="lg:col-span-2">
                 <PropertyMap
-                  properties={mockProperties}
+                  properties={properties}
                   height="600px"
                   selectedProperty={selectedProperty}
                   onPropertySelect={setSelectedProperty}
@@ -249,11 +489,11 @@ export default function SearchPage() {
               <div className="space-y-4 max-h-[600px] overflow-y-auto">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-gray-900">
-                    {mockProperties.length} propriétés trouvées
+                    {pagination.total} propriétés trouvées
                   </h3>
                 </div>
                 
-                {mockProperties.map((property) => (
+                {properties.map((property) => (
                   <div
                     key={property.id}
                     className={`cursor-pointer transition-all duration-200 ${
@@ -270,40 +510,74 @@ export default function SearchPage() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  {mockProperties.length} propriétés trouvées
+                  {pagination.total} propriétés trouvées
                 </h3>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockProperties.map((property) => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </div>
-            </div>
-          )}
+              {properties.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {properties.map((property) => (
+                      <PropertyCard key={property.id} property={property} />
+                    ))}
+                  </div>
 
-          {mockProperties.length === 0 && (
-            <div className="text-center py-16">
-              <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-12 h-12 text-gray-400" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Aucune propriété trouvée
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Essayez de modifier vos critères de recherche pour voir plus de résultats.
-              </p>
-              <Button onClick={() => setFilters({
-                search: '',
-                type: '',
-                minPrice: '',
-                maxPrice: '',
-                minSurface: '',
-                rooms: '',
-                city: '',
-              })}>
-                Effacer les filtres
-              </Button>
+                  {/* Pagination */}
+                  {pagination.totalPages > 1 && (
+                    <div className="flex justify-center mt-8">
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => fetchResults(pagination.page - 1)}
+                          disabled={!pagination.hasPrevPage}
+                        >
+                          Précédent
+                        </Button>
+                        
+                        <span className="px-4 py-2 text-sm text-gray-600">
+                          Page {pagination.page} sur {pagination.totalPages}
+                        </span>
+                        
+                        <Button
+                          variant="outline"
+                          onClick={() => fetchResults(pagination.page + 1)}
+                          disabled={!pagination.hasNextPage}
+                        >
+                          Suivant
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-16">
+                  <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-12 h-12 text-gray-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Aucune propriété trouvée
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Essayez de modifier vos critères de recherche pour voir plus de résultats.
+                  </p>
+                  <Button onClick={() => setFilters({
+                    query: '',
+                    type: '',
+                    category: '',
+                    minPrice: '',
+                    maxPrice: '',
+                    minSurface: '',
+                    maxSurface: '',
+                    bedrooms: '',
+                    bathrooms: '',
+                    city: '',
+                    postalCode: '',
+                    features: []
+                  })}>
+                    Effacer les filtres
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -33,7 +33,6 @@ export default function NewPropertyPage() {
     description: '',
     price: '',
     type: '',
-    status: 'AVAILABLE',
     
     // Localisation
     address: '',
@@ -67,7 +66,6 @@ export default function NewPropertyPage() {
     // Publication
     isPublished: false,
     isFeatured: false,
-    publishedAt: '',
     
     // Médias
     images: [] as string[],
@@ -98,18 +96,50 @@ export default function NewPropertyPage() {
     }
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    if (files) {
-      // Simulation d'upload - en production, uploader vers un service cloud
-      const newImages = Array.from(files).map((file, index) => 
-        `https://images.unsplash.com/photo-${1560448204 + index}-e02f11c3d0e2?w=800`
-      )
-      setUploadedImages(prev => [...prev, ...newImages])
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...newImages]
-      }))
+    if (!files || files.length === 0) return
+
+    try {
+      // Create FormData for file upload
+      const uploadFormData = new FormData()
+      Array.from(files).forEach(file => {
+        uploadFormData.append('files', file)
+      })
+      uploadFormData.append('type', 'property')
+
+      // Upload files to our API
+      const response = await fetch('/api/upload/images', {
+        method: 'POST',
+        body: uploadFormData,
+      })
+
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Upload failed')
+      }
+
+      // Add uploaded images to state
+      if (data.data.uploadedFiles && data.data.uploadedFiles.length > 0) {
+        setUploadedImages(prev => [...prev, ...data.data.uploadedFiles])
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, ...data.data.uploadedFiles]
+        }))
+        toast.success(`${data.data.totalUploaded} image(s) uploadée(s) avec succès`)
+      }
+
+      // Show errors if any
+      if (data.data.errors && data.data.errors.length > 0) {
+        data.data.errors.forEach((error: string) => {
+          toast.error(error)
+        })
+      }
+
+    } catch (error) {
+      console.error('Error uploading images:', error)
+      toast.error('Erreur lors de l\'upload des images')
     }
   }
 
@@ -121,18 +151,107 @@ export default function NewPropertyPage() {
     }))
   }
 
+  const handleNextStep = () => {
+    // Validate current step before advancing
+    if (currentStep === 1) {
+      if (!formData.title || !formData.description || !formData.price || !formData.type) {
+        toast.error('Veuillez remplir tous les champs obligatoires de cette étape')
+        return
+      }
+      toast.success('Étape 1 complétée ! Informations générales sauvegardées.')
+    } else if (currentStep === 2) {
+      if (!formData.address || !formData.city || !formData.zipCode) {
+        toast.error('Veuillez remplir tous les champs obligatoires de cette étape')
+        return
+      }
+      toast.success('Étape 2 complétée ! Localisation sauvegardée.')
+    } else if (currentStep === 3) {
+      if (!formData.surface || !formData.rooms) {
+        toast.error('Veuillez remplir tous les champs obligatoires de cette étape')
+        return
+      }
+      toast.success('Étape 3 complétée ! Caractéristiques sauvegardées.')
+    }
+    
+    // Advance to next step
+    setCurrentStep(Math.min(4, currentStep + 1))
+  }
+
+  const handlePreviousStep = () => {
+    setCurrentStep(Math.max(1, currentStep - 1))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
+    
+    console.log('Form submission triggered on step:', currentStep)
+    
+    // Only allow submission on the final step
+    if (currentStep !== 4) {
+      console.warn('Form submission attempted on step', currentStep, '- ignoring')
+      toast.error('Veuillez compléter toutes les étapes avant de créer la propriété')
+      return
+    }
+    
     setIsSubmitting(true)
 
     try {
-      // Simulation d'enregistrement - en production, envoyer à l'API
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
+      // Validate required fields
+      if (!formData.title || !formData.description || !formData.price || !formData.type || 
+          !formData.address || !formData.city || !formData.zipCode || !formData.surface || 
+          !formData.rooms) {
+        throw new Error('Veuillez remplir tous les champs obligatoires')
+      }
+
+      // Prepare data for API
+      const propertyData = {
+        title: formData.title,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        type: formData.type,
+        surface: parseInt(formData.surface),
+        rooms: parseInt(formData.rooms),
+        bedrooms: parseInt(formData.bedrooms) || 0,
+        bathrooms: parseInt(formData.bathrooms) || 0,
+        floor: formData.floor ? parseInt(formData.floor) : undefined,
+        totalFloors: formData.totalFloors ? parseInt(formData.totalFloors) : undefined,
+        yearBuilt: formData.yearBuilt ? parseInt(formData.yearBuilt) : undefined,
+        energyClass: formData.energyClass || undefined,
+        address: formData.address,
+        city: formData.city,
+        zipCode: formData.zipCode,
+        country: 'Tunisia',
+        latitude: formData.latitude ? parseFloat(formData.latitude) : undefined,
+        longitude: formData.longitude ? parseFloat(formData.longitude) : undefined,
+        features: formData.features,
+        images: formData.images,
+        virtualTour: formData.virtualTour || undefined,
+        videoUrl: formData.videoUrl || undefined,
+        isPublished: formData.isPublished,
+        isFeatured: formData.isFeatured,
+      }
+
+      // Call the API
+      const response = await fetch('/api/properties', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(propertyData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create property')
+      }
+
       toast.success('Propriété créée avec succès !')
       router.push('/admin/properties')
     } catch (error) {
-      toast.error('Erreur lors de la création de la propriété')
+      console.error('Error creating property:', error)
+      toast.error(error instanceof Error ? error.message : 'Erreur lors de la création de la propriété')
     } finally {
       setIsSubmitting(false)
     }
@@ -183,7 +302,13 @@ export default function NewPropertyPage() {
                 ? 'bg-primary-600 border-primary-600 text-white'
                 : 'border-gray-300 text-gray-400'
             }`}>
-              {step.number}
+              {currentStep === step.number ? (
+                <span className="text-sm font-bold">{step.number}</span>
+              ) : currentStep > step.number ? (
+                <span className="text-white text-sm">✓</span>
+              ) : (
+                <span className="text-gray-400 text-sm">{step.number}</span>
+              )}
             </div>
             <div className="ml-3 hidden sm:block">
               <p className={`text-sm font-medium ${
@@ -191,6 +316,9 @@ export default function NewPropertyPage() {
               }`}>
                 {step.title}
               </p>
+              {currentStep === step.number && (
+                <p className="text-xs text-primary-500 mt-1">Étape actuelle</p>
+              )}
             </div>
             {index < steps.length - 1 && (
               <div className="w-12 h-px bg-gray-300 mx-4 hidden md:block" />
@@ -199,7 +327,7 @@ export default function NewPropertyPage() {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <div>
         {/* Étape 1 - Informations générales */}
         {currentStep === 1 && (
           <Card>
@@ -241,7 +369,7 @@ export default function NewPropertyPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Prix (€) *
+                    Prix (TND) *
                   </label>
                   <div className="relative">
                     <Euro className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -250,7 +378,7 @@ export default function NewPropertyPage() {
                       type="number"
                       value={formData.price}
                       onChange={handleChange}
-                      placeholder="485000"
+                      placeholder="350000"
                       className="pl-10"
                       required
                     />
@@ -279,24 +407,6 @@ export default function NewPropertyPage() {
                   </select>
                 </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Statut
-                </label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                >
-                  <option value="AVAILABLE">Disponible</option>
-                  <option value="RESERVED">Réservé</option>
-                  <option value="SOLD">Vendu</option>
-                  <option value="RENTED">Loué</option>
-                  <option value="DRAFT">Brouillon</option>
-                </select>
-              </div>
             </CardContent>
           </Card>
         )}
@@ -319,7 +429,7 @@ export default function NewPropertyPage() {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  placeholder="25 Rue de la Convention"
+                  placeholder="Avenue Habib Bourguiba"
                   required
                 />
               </div>
@@ -333,7 +443,7 @@ export default function NewPropertyPage() {
                     name="city"
                     value={formData.city}
                     onChange={handleChange}
-                    placeholder="Paris"
+                    placeholder="Tunis"
                     required
                   />
                 </div>
@@ -345,7 +455,7 @@ export default function NewPropertyPage() {
                     name="zipCode"
                     value={formData.zipCode}
                     onChange={handleChange}
-                    placeholder="75015"
+                    placeholder="1001"
                     required
                   />
                 </div>
@@ -362,7 +472,7 @@ export default function NewPropertyPage() {
                     step="any"
                     value={formData.latitude}
                     onChange={handleChange}
-                    placeholder="48.8434"
+                    placeholder="36.8065"
                   />
                 </div>
                 <div>
@@ -375,7 +485,7 @@ export default function NewPropertyPage() {
                     step="any"
                     value={formData.longitude}
                     onChange={handleChange}
-                    placeholder="2.2945"
+                    placeholder="10.1815"
                   />
                 </div>
               </div>
@@ -555,33 +665,36 @@ export default function NewPropertyPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Upload d'images */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Photos de la propriété
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                  <div className="text-center">
-                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <div className="text-sm text-gray-600 mb-4">
-                      Glissez-déposez vos images ou cliquez pour sélectionner
-                    </div>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      id="image-upload"
-                    />
-                    <label htmlFor="image-upload">
-                      <Button type="button" variant="outline" size="sm">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Ajouter des images
-                      </Button>
-                    </label>
-                  </div>
-                </div>
+                             {/* Upload d'images */}
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">
+                   Photos de la propriété
+                 </label>
+                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                   <div className="text-center">
+                     <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                     <div className="text-sm text-gray-600 mb-4">
+                       Glissez-déposez vos images ou cliquez pour sélectionner
+                     </div>
+                     <input
+                       type="file"
+                       multiple
+                       accept="image/*"
+                       onChange={handleImageUpload}
+                       className="hidden"
+                       id="image-upload"
+                     />
+                     <Button 
+                       type="button" 
+                       variant="outline" 
+                       size="sm"
+                       onClick={() => document.getElementById('image-upload')?.click()}
+                     >
+                       <Plus className="w-4 h-4 mr-2" />
+                       Ajouter des images
+                     </Button>
+                   </div>
+                 </div>
 
                 {/* Aperçu des images */}
                 {uploadedImages.length > 0 && (
@@ -678,30 +791,63 @@ export default function NewPropertyPage() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
+            onClick={handlePreviousStep}
             disabled={currentStep === 1}
           >
             Précédent
           </Button>
           
-          {currentStep < 4 ? (
+          {currentStep < 4 && (
             <Button
               type="button"
-              onClick={() => setCurrentStep(Math.min(4, currentStep + 1))}
+              onClick={handleNextStep}
             >
               Suivant
             </Button>
-          ) : (
-            <Button
-              type="submit"
-              loading={isSubmitting}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Créer la propriété
-            </Button>
           )}
         </div>
-      </form>
+      </div>
+      
+      {/* Separate form for final submission */}
+      {currentStep === 4 && (
+        <div className="mt-8">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                <span className="text-white text-sm font-bold">✓</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-green-800">
+                  Toutes les étapes sont complétées !
+                </h3>
+                <p className="text-sm text-green-700 mt-1">
+                  Vous pouvez maintenant créer votre propriété en cliquant sur le bouton ci-dessous.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <form onSubmit={handleSubmit}>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Création...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Créer la propriété
+                </>
+              )}
+            </Button>
+          </form>
+        </div>
+      )}
     </div>
   )
 }
