@@ -295,12 +295,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Button
             variant="outline"
             size="sm"
-            className="w-full"
+            className="w-full mb-2"
             onClick={() => signOut()}
           >
             <LogOut className="w-4 h-4 mr-2" />
             Déconnexion
           </Button>
+          <Link href="/" className="w-full">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Retour au site
+            </Button>
+          </Link>
         </div>
       </div>
 

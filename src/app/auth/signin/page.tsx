@@ -241,8 +241,8 @@ export default function SignInPage() {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="space-y-2 text-sm text-blue-700">
-              <p><strong>Admin:</strong> admin@agence-premium.tn / admin123</p>
-              <p><strong>Agent:</strong> agent@agence-premium.tn / agent123</p>
+              <p><strong>Admin:</strong> admin@agence.tn / admin123</p>
+              <p><strong>Agent:</strong> agent@agence.tn / agent123</p>
             </div>
           </CardContent>
         </Card>
